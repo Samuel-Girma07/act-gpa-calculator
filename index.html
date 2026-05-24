@@ -5,264 +5,224 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ACT GPA Calculator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-tertiary: #1a1a25;
-            --bg-glass: rgba(255, 255, 255, 0.03);
-            --fg-primary: #ffffff;
-            --fg-secondary: #a0a0b0;
-            --fg-muted: #6a6a7a;
-            --accent: #ff6b4a;
-            --accent-hover: #ff8568;
-            --accent-glow: rgba(255, 107, 74, 0.3);
-            --accent-subtle: rgba(255, 107, 74, 0.1);
+            /* Dark Academic Palette */
+            --bg-primary: #0c1220;
+            --bg-secondary: #111827;
+            --bg-tertiary: #1a2236;
+            --bg-card: #151d2e;
+            --bg-input: #1a2236;
+            
+            --fg-primary: #e8e4dc;
+            --fg-secondary: #9ca3af;
+            --fg-muted: #6b7280;
+            
+            /* Academic Gold */
+            --accent: #c9a227;
+            --accent-hover: #d4b43a;
+            --accent-dim: rgba(201, 162, 39, 0.15);
+            --accent-glow: rgba(201, 162, 39, 0.2);
+            
+            /* Academic Green for success */
             --success: #4ade80;
             --success-bg: rgba(74, 222, 128, 0.1);
-            --warning: #fbbf24;
-            --warning-bg: rgba(251, 191, 36, 0.1);
+            
+            /* Academic Red */
             --danger: #f87171;
             --danger-bg: rgba(248, 113, 113, 0.1);
-            --border-default: rgba(255, 255, 255, 0.06);
-            --border-hover: rgba(255, 255, 255, 0.12);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-mono: 'Space Mono', monospace;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
-            --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
-            --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
-            --shadow-glow: 0 0 40px var(--accent-glow);
+            
+            --border-default: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            
+            --font-serif: 'Crimson Pro', Georgia, serif;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
         }
 
         [data-theme="light"] {
-            --bg-primary: #f8f9fa;
+            --bg-primary: #f5f3ef;
             --bg-secondary: #ffffff;
-            --bg-tertiary: #e9ecef;
-            --bg-glass: rgba(255, 255, 255, 0.7);
+            --bg-tertiary: #ebe8e1;
+            --bg-card: #faf9f7;
+            --bg-input: #f0ede7;
+            
             --fg-primary: #1a1a2e;
-            --fg-secondary: #495057;
-            --fg-muted: #adb5bd;
-            --accent: #e85d3c;
-            --accent-hover: #d44a2a;
-            --accent-glow: rgba(232, 93, 60, 0.2);
-            --accent-subtle: rgba(232, 93, 60, 0.08);
-            --border-default: rgba(0, 0, 0, 0.06);
-            --border-hover: rgba(0, 0, 0, 0.12);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-            --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
-            --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
-            --shadow-glow: 0 0 40px var(--accent-glow);
+            --fg-secondary: #4b5563;
+            --fg-muted: #9ca3af;
+            
+            --accent: #8b6914;
+            --accent-hover: #6b5010;
+            --accent-dim: rgba(139, 105, 20, 0.1);
+            --accent-glow: rgba(139, 105, 20, 0.15);
+            
+            --border-default: rgba(0, 0, 0, 0.08);
+            --border-hover: rgba(0, 0, 0, 0.15);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { -webkit-tap-highlight-color: transparent; }
+        
         body {
             font-family: var(--font-sans);
             background: var(--bg-primary);
             color: var(--fg-primary);
             min-height: 100vh;
+            font-size: 15px;
+            line-height: 1.6;
             overflow-x: hidden;
-            transition: background 0.4s ease, color 0.4s ease;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        /* Custom Cursor - only on fine pointer devices */
-        @media (pointer: fine) {
-            body {
-                cursor: none;
-            }
-        }
-
-        /* Background Gradient Mesh */
-        .bg-mesh {
-            position: fixed; inset: 0;
-            background:
-                radial-gradient(ellipse at 20% 80%, rgba(255,107,74,0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(255,107,74,0.05) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(100,100,255,0.03) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Custom Cursor Element */
-        .cursor {
-            width: 12px; height: 12px;
-            background: var(--accent);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: difference;
-            transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
-            display: none;
-        }
-        @media (pointer: fine) {
-            .cursor { display: block; }
-        }
-        .cursor.hover {
-            width: 40px; height: 40px;
-            background: transparent;
-            border: 2px solid var(--accent);
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--fg-muted); border-radius: 3px; }
 
-        /* Animations */
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(16px); }
             to { opacity: 1; transform: translateY(0); }
         }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+
+        .anim-fade-up {
+            animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
         }
+        .anim-d1 { animation-delay: 0.06s; }
+        .anim-d2 { animation-delay: 0.12s; }
+        .anim-d3 { animation-delay: 0.18s; }
 
-        .anim-fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        .anim-d1 { animation-delay: 0.08s; }
-        .anim-d2 { animation-delay: 0.16s; }
-        .anim-d3 { animation-delay: 0.24s; }
-        .anim-d4 { animation-delay: 0.32s; }
-
-        /* Layout */
-        .app { min-height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 1; }
-        .container { max-width: 720px; margin: 0 auto; padding: 0 24px; width: 100%; }
+        .app { min-height: 100vh; display: flex; flex-direction: column; }
+        .container { max-width: 680px; margin: 0 auto; padding: 0 24px; width: 100%; }
 
         /* Header */
         .header {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(10, 10, 15, 0.8);
-            backdrop-filter: blur(20px) saturate(1.5);
+            background: var(--bg-secondary);
             border-bottom: 1px solid var(--border-default);
-        }
-        [data-theme="light"] .header {
-            background: rgba(248, 249, 250, 0.8);
+            position: sticky; top: 0; z-index: 100;
         }
         .header-inner {
             display: flex; align-items: center; justify-content: space-between;
             padding: 16px 0;
         }
         .brand {
-            display: flex; align-items: center; gap: 12px;
+            display: flex; align-items: center; gap: 14px;
         }
-        .brand-logo {
-            width: 40px; height: 40px;
-            background: var(--accent);
-            border-radius: 12px;
+        .brand-seal {
+            width: 42px; height: 42px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-family: var(--font-mono);
-            font-size: 18px; font-weight: 700;
-            color: white;
-            box-shadow: 0 4px 20px var(--accent-glow);
+            font-family: var(--font-serif);
+            font-size: 20px; font-weight: 700;
+            color: var(--accent);
+            flex-shrink: 0;
         }
         .brand-text h1 {
-            font-size: 18px; font-weight: 700;
+            font-family: var(--font-serif);
+            font-size: 22px; font-weight: 700;
             color: var(--fg-primary);
-            line-height: 1.2;
+            line-height: 1.1;
+            letter-spacing: -0.01em;
         }
         .brand-text span {
             font-family: var(--font-mono);
-            font-size: 10px; font-weight: 400;
+            font-size: 10px; font-weight: 500;
             color: var(--fg-muted);
-            letter-spacing: 0.1em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
         }
         .theme-toggle {
-            width: 40px; height: 40px;
-            border-radius: 12px;
+            width: 38px; height: 38px;
+            border-radius: 8px;
             border: 1px solid var(--border-default);
-            background: var(--bg-glass);
-            backdrop-filter: blur(10px);
+            background: var(--bg-tertiary);
             color: var(--fg-secondary);
             cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             font-size: 16px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         .theme-toggle:hover {
             border-color: var(--accent);
             color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
         }
 
-        /* Hero Section */
-        .hero {
+        /* GPA Hero */
+        .gpa-hero {
             padding: 40px 0 32px;
             text-align: center;
+            border-bottom: 1px solid var(--border-default);
+            margin-bottom: 32px;
         }
-        .hero-gpa {
-            font-family: var(--font-mono);
-            font-size: clamp(64px, 12vw, 96px);
-            font-weight: 700;
+        .gpa-hero .value {
+            font-family: var(--font-serif);
+            font-size: 72px; font-weight: 700;
             color: var(--fg-primary);
             line-height: 1;
-            letter-spacing: -0.04em;
-            background: linear-gradient(135deg, var(--fg-primary) 0%, var(--fg-secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            letter-spacing: -0.03em;
         }
-        .hero-label {
+        .gpa-hero .label {
             font-family: var(--font-mono);
-            font-size: 12px; font-weight: 400;
-            color: var(--fg-muted);
-            letter-spacing: 0.2em;
+            font-size: 11px; font-weight: 500;
+            color: var(--accent);
+            letter-spacing: 0.15em;
             text-transform: uppercase;
             margin-top: 12px;
         }
-        .hero-meta {
-            display: flex; justify-content: center; gap: 24px;
-            margin-top: 16px;
+        .gpa-meta {
+            display: flex; justify-content: center; gap: 32px;
+            margin-top: 20px;
             flex-wrap: wrap;
         }
-        .hero-meta-item {
-            display: flex; flex-direction: column; align-items: center;
-            gap: 4px;
+        .gpa-meta-item {
+            text-align: center;
         }
-        .hero-meta-item .label {
+        .gpa-meta-item .num {
             font-family: var(--font-mono);
-            font-size: 10px; color: var(--fg-muted);
-            letter-spacing: 0.1em; text-transform: uppercase;
-        }
-        .hero-meta-item .value {
-            font-family: var(--font-mono);
-            font-size: 14px; font-weight: 700;
-            color: var(--accent);
-        }
-
-        /* Glass Card */
-        .glass-card {
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px) saturate(1.5);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 24px;
-            margin-bottom: 16px;
-            transition: all 0.3s ease;
-        }
-        .glass-card:hover {
-            border-color: var(--border-hover);
-            box-shadow: var(--shadow-lg);
-        }
-
-        /* Section Title */
-        .section-title {
-            font-size: 24px; font-weight: 700;
+            font-size: 20px; font-weight: 600;
             color: var(--fg-primary);
-            margin-bottom: 8px;
+        }
+        .gpa-meta-item .lbl {
+            font-family: var(--font-mono);
+            font-size: 10px; font-weight: 500;
+            color: var(--fg-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* Section */
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: 28px; font-weight: 600;
+            color: var(--fg-primary);
+            margin-bottom: 6px;
+            line-height: 1.2;
         }
         .section-subtitle {
             font-size: 14px;
             color: var(--fg-secondary);
             margin-bottom: 24px;
+            font-style: italic;
+            font-family: var(--font-serif);
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: border-color 0.2s ease;
+        }
+        .card:hover {
+            border-color: var(--border-hover);
         }
 
         /* Selector */
@@ -276,35 +236,34 @@
         }
         .select-wrapper select {
             appearance: none; width: 100%;
-            background: var(--bg-tertiary);
+            background: var(--bg-input);
             border: 1px solid var(--border-default);
-            border-radius: 16px;
-            padding: 14px 44px 14px 20px;
+            border-radius: 8px;
+            padding: 12px 40px 12px 16px;
             font-family: var(--font-sans);
-            font-size: 14px; font-weight: 600;
+            font-size: 14px; font-weight: 500;
             color: var(--fg-primary);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         .select-wrapper select:hover, .select-wrapper select:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
             outline: none;
         }
         .select-wrapper::after {
             content: "↓";
-            position: absolute; right: 16px; top: 50%;
+            position: absolute; right: 14px; top: 50%;
             transform: translateY(-50%);
-            font-size: 14px; color: var(--accent);
+            font-size: 12px; color: var(--accent);
             pointer-events: none;
         }
         .credit-badge {
-            padding: 10px 20px;
-            background: var(--accent-subtle);
+            padding: 8px 16px;
+            background: var(--accent-dim);
             border: 1px solid var(--accent);
-            border-radius: 16px;
+            border-radius: 8px;
             font-family: var(--font-mono);
-            font-size: 12px; font-weight: 700;
+            font-size: 12px; font-weight: 600;
             color: var(--accent);
         }
         .credit-badge.warning {
@@ -313,208 +272,134 @@
             color: var(--danger);
         }
 
-        /* Progress Bar */
-        .progress-container {
-            margin-bottom: 24px;
-        }
+        /* Progress */
         .progress-track {
-            height: 8px;
+            height: 4px;
             background: var(--bg-tertiary);
-            border-radius: 4px;
+            border-radius: 2px;
             overflow: hidden;
-            position: relative;
+            margin-bottom: 8px;
         }
         .progress-fill {
             height: 100%;
             background: var(--accent);
-            border-radius: 4px;
-            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 0 20px var(--accent-glow);
-            position: relative;
-        }
-        .progress-fill::after {
-            content: '';
-            position: absolute; right: 0; top: -4px;
-            width: 16px; height: 16px;
-            background: var(--accent);
-            border-radius: 50%;
-            box-shadow: 0 0 20px var(--accent-glow);
+            border-radius: 2px;
+            transition: width 0.6s ease;
         }
         .progress-labels {
             display: flex; justify-content: space-between;
-            margin-top: 8px;
             font-family: var(--font-mono);
-            font-size: 11px; color: var(--fg-muted);
+            font-size: 10px; color: var(--fg-muted);
+            letter-spacing: 0.05em;
         }
 
-        /* Course Cards */
-        .course-list { display: flex; flex-direction: column; gap: 12px; }
-        .course-card {
-            background: var(--bg-glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 20px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+        /* Course Table */
+        .course-table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .course-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: var(--accent);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
+        .course-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-family: var(--font-mono);
+            font-size: 10px; font-weight: 600;
+            color: var(--fg-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-default);
         }
-        .course-card:hover::before {
-            transform: scaleX(1);
+        .course-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-default);
+            vertical-align: middle;
         }
-        .course-card:hover {
-            border-color: var(--border-hover);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
+        .course-table tr:last-child td {
+            border-bottom: none;
         }
-        .course-card.excluded { opacity: 0.4; }
-        .course-card.retaken { opacity: 0.5; }
-        .course-card.retaken .course-name { text-decoration: line-through; }
-
-        .course-top {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            margin-bottom: 14px;
+        .course-table tr:hover td {
+            background: rgba(255,255,255,0.02);
         }
-        .course-info {
-            display: flex; align-items: flex-start; gap: 12px;
-            flex: 1;
+        [data-theme="light"] .course-table tr:hover td {
+            background: rgba(0,0,0,0.02);
         }
-        .course-checkbox {
-            width: 20px; height: 20px;
-            accent-color: var(--accent);
-            margin-top: 2px; flex-shrink: 0;
-            cursor: pointer;
-        }
-        .course-name {
+        .course-table .course-name {
+            font-family: var(--font-serif);
             font-size: 16px; font-weight: 600;
             color: var(--fg-primary);
-            line-height: 1.3;
         }
-        .course-credits {
+        .course-table .course-credits {
             font-family: var(--font-mono);
-            font-size: 11px; color: var(--fg-muted);
-            margin-top: 4px;
-        }
-        .course-actions {
-            display: flex; align-items: center; gap: 8px;
-            flex-shrink: 0;
-        }
-        .grade-badge {
-            padding: 4px 12px;
-            border-radius: 8px;
-            font-family: var(--font-mono);
-            font-size: 12px; font-weight: 700;
-        }
-        .grade-A { background: var(--success-bg); color: var(--success); }
-        .grade-B { background: var(--accent-subtle); color: var(--accent); }
-        .grade-C { background: var(--warning-bg); color: var(--warning); }
-        .grade-D { background: var(--danger-bg); color: var(--danger); }
-        .grade-F { background: var(--danger-bg); color: var(--danger); }
-        .course-delete {
-            width: 32px; height: 32px;
-            border-radius: 8px;
-            border: none;
-            background: var(--danger-bg);
-            color: var(--danger);
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px;
-            opacity: 0.7;
-            transition: all 0.2s ease;
-        }
-        .course-card:hover .course-delete {
-            opacity: 1;
-            background: var(--danger-bg);
-        }
-        .course-delete:hover {
-            background: var(--danger) !important;
-            color: white;
-            transform: scale(1.1);
-        }
-        @media (pointer: coarse) {
-            .course-delete {
-                opacity: 1;
-                background: var(--danger-bg);
-            }
-        }
-
-        .course-inputs {
-            display: grid; grid-template-columns: 1fr 110px;
-            gap: 10px;
-            margin-bottom: 12px;
+            font-size: 12px; color: var(--fg-muted);
         }
         .course-input {
             width: 100%;
-            padding: 12px 16px;
-            background: var(--bg-tertiary);
+            padding: 8px 12px;
+            background: var(--bg-input);
             border: 1px solid var(--border-default);
-            border-radius: 12px;
+            border-radius: 6px;
             color: var(--fg-primary);
             font-family: var(--font-mono);
-            font-size: 14px;
-            transition: all 0.3s ease;
+            font-size: 13px;
+            transition: all 0.2s ease;
         }
         .course-input:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
         }
         .course-input::placeholder { color: var(--fg-muted); }
-        .course-flags {
-            display: flex; gap: 20px; flex-wrap: wrap;
+        .grade-badge {
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 12px; font-weight: 700;
+            display: inline-block;
+        }
+        .grade-A { background: var(--success-bg); color: var(--success); }
+        .grade-B { background: var(--accent-dim); color: var(--accent); }
+        .grade-C { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
+        .grade-D { background: var(--danger-bg); color: var(--danger); }
+        .grade-F { background: var(--danger-bg); color: var(--danger); }
+        .course-delete {
+            width: 28px; height: 28px;
+            border: none; border-radius: 6px;
+            background: transparent;
+            color: var(--fg-muted);
+            cursor: pointer;
+            font-size: 16px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .course-delete:hover {
+            background: var(--danger-bg);
+            color: var(--danger);
         }
         .flag {
             display: flex; align-items: center; gap: 6px;
-            font-size: 13px; color: var(--fg-secondary);
+            font-size: 12px; color: var(--fg-secondary);
             cursor: pointer;
-            transition: color 0.2s ease;
+            white-space: nowrap;
         }
-        .flag:hover { color: var(--fg-primary); }
         .flag input { accent-color: var(--accent); cursor: pointer; }
         .flag.retake input { accent-color: var(--danger); }
 
         /* Buttons */
         .btn {
             display: inline-flex; align-items: center; justify-content: center;
-            gap: 8px; padding: 14px 24px;
-            border-radius: 16px;
+            gap: 8px; padding: 12px 20px;
+            border-radius: 8px;
             font-family: var(--font-sans);
-            font-size: 14px; font-weight: 600;
+            font-size: 13px; font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             border: none;
-            position: relative;
-            overflow: hidden;
         }
-        .btn::before {
-            content: '';
-            position: absolute; top: 50%; left: 50%;
-            width: 0; height: 0;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.4s ease, height 0.4s ease;
-        }
-        .btn:active::before { width: 300px; height: 300px; }
         .btn-primary {
             background: var(--accent);
-            color: white;
-            box-shadow: 0 4px 20px var(--accent-glow);
+            color: var(--bg-primary);
         }
         .btn-primary:hover {
             background: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--accent-glow);
         }
-        .btn-primary:active { transform: translateY(0) scale(0.98); }
         .btn-secondary {
             background: var(--bg-tertiary);
             color: var(--fg-secondary);
@@ -523,7 +408,6 @@
         .btn-secondary:hover {
             border-color: var(--accent);
             color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
         }
         .btn-danger {
             background: transparent;
@@ -538,7 +422,7 @@
             margin-top: 20px;
             flex-wrap: wrap;
         }
-        .action-row .btn { flex: 1; min-width: 140px; }
+        .action-row .btn { flex: 1; min-width: 120px; }
 
         /* Semester Rows */
         .semester-row {
@@ -546,102 +430,89 @@
             grid-template-columns: 1fr 90px 90px;
             gap: 12px;
             align-items: center;
-            padding: 16px 20px;
-            background: var(--bg-glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
+            padding: 14px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
             margin-bottom: 8px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         .semester-row:hover {
             border-color: var(--border-hover);
-            box-shadow: var(--shadow-md);
         }
         .semester-row.excluded { opacity: 0.35; }
         .semester-name {
             display: flex; align-items: center; gap: 12px;
         }
         .toggle-track {
-            width: 40px; height: 22px;
+            width: 36px; height: 20px;
             background: var(--fg-muted);
-            border-radius: 11px;
+            border-radius: 10px;
             position: relative;
             cursor: pointer;
             flex-shrink: 0;
-            transition: all 0.3s ease;
+            transition: background 0.2s ease;
         }
         .toggle-track.on {
             background: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
         }
         .toggle-track::after {
             content: '';
             position: absolute; top: 2px; left: 2px;
-            width: 18px; height: 18px;
+            width: 16px; height: 16px;
             background: white;
             border-radius: 50%;
-            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: transform 0.2s ease;
         }
-        .toggle-track.on::after { transform: translateX(18px); }
+        .toggle-track.on::after { transform: translateX(16px); }
         .semester-name label {
+            font-family: var(--font-serif);
             font-size: 15px; font-weight: 600;
             color: var(--fg-primary);
             cursor: pointer;
         }
         .semester-input {
             width: 100%;
-            padding: 10px 12px;
-            background: var(--bg-tertiary);
+            padding: 8px 10px;
+            background: var(--bg-input);
             border: 1px solid var(--border-default);
-            border-radius: 10px;
+            border-radius: 6px;
             color: var(--fg-primary);
             font-family: var(--font-mono);
-            font-size: 13px;
+            font-size: 12px;
             text-align: center;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         .semester-input:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
         }
 
         /* Target Result */
         .target-result {
-            padding: 40px 32px;
+            padding: 32px 24px;
             text-align: center;
-            border-radius: 24px;
-            margin-top: 24px;
-            animation: scaleIn 0.5s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .target-result::before {
-            content: '';
-            position: absolute; inset: 0;
-            border-radius: 24px;
-            padding: 2px;
-            background: linear-gradient(135deg, var(--accent), transparent 50%);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
+            border: 1px solid;
+            border-radius: 12px;
+            margin-top: 20px;
+            animation: fadeIn 0.4s ease;
         }
         .target-result.achievable {
+            border-color: var(--success);
             background: var(--success-bg);
         }
         .target-result.unachievable {
+            border-color: var(--danger);
             background: var(--danger-bg);
         }
         .target-result .result-label {
             font-family: var(--font-mono);
-            font-size: 11px; font-weight: 700;
-            letter-spacing: 0.15em;
+            font-size: 10px; font-weight: 700;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            margin-bottom: 16px;
-            padding: 6px 16px;
-            border-radius: 8px;
+            margin-bottom: 12px;
+            padding: 4px 12px;
+            border-radius: 4px;
             display: inline-block;
         }
         .target-result.achievable .result-label {
@@ -653,14 +524,11 @@
             color: var(--danger);
         }
         .target-result .result-value {
-            font-family: var(--font-mono);
-            font-size: 56px; font-weight: 700;
+            font-family: var(--font-serif);
+            font-size: 48px; font-weight: 700;
             line-height: 1;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, var(--fg-primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--fg-primary);
         }
         .target-result .result-detail {
             font-size: 14px;
@@ -670,46 +538,44 @@
         }
 
         /* Inputs */
-        .input-group { margin-bottom: 16px; }
+        .input-group { margin-bottom: 14px; }
         .input-label {
             font-family: var(--font-mono);
-            font-size: 11px; font-weight: 700;
+            font-size: 10px; font-weight: 600;
             color: var(--fg-muted);
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             display: block;
         }
         .input-field {
             width: 100%;
-            padding: 14px 18px;
-            background: var(--bg-tertiary);
+            padding: 12px 16px;
+            background: var(--bg-input);
             border: 1px solid var(--border-default);
-            border-radius: 16px;
+            border-radius: 8px;
             color: var(--fg-primary);
             font-family: var(--font-mono);
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         .input-field:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
         }
         .input-field::placeholder { color: var(--fg-muted); }
 
-        /* Form Grid */
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 14px;
         }
 
-        /* Add Course Modal */
+        /* Modal */
         .modal-overlay {
             position: fixed; inset: 0;
-            background: rgba(10, 10, 15, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(12, 18, 32, 0.85);
+            backdrop-filter: blur(8px);
             display: flex; align-items: center; justify-content: center;
             z-index: 1000;
             padding: 20px;
@@ -719,68 +585,65 @@
         .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal {
             background: var(--bg-secondary);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 32px;
-            max-width: 480px; width: 100%;
+            border: 1px solid var(--border-default);
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 460px; width: 100%;
             max-height: 85vh; overflow-y: auto;
-            transform: scale(0.95) translateY(20px);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
+            transform: translateY(16px);
+            transition: all 0.3s ease;
         }
         .modal-overlay.active .modal {
-            transform: scale(1) translateY(0);
+            transform: translateY(0);
         }
         .modal-title {
-            font-size: 24px; font-weight: 700;
+            font-family: var(--font-serif);
+            font-size: 22px; font-weight: 600;
             margin-bottom: 20px;
             color: var(--fg-primary);
         }
         .modal-close {
             position: absolute; top: 16px; right: 16px;
-            width: 36px; height: 36px;
-            border-radius: 12px;
+            width: 32px; height: 32px;
+            border-radius: 8px;
             border: 1px solid var(--border-default);
             background: transparent;
             color: var(--fg-muted);
             cursor: pointer;
-            font-size: 20px;
+            font-size: 18px;
             display: flex; align-items: center; justify-content: center;
             transition: all 0.2s ease;
         }
         .modal-close:hover { color: var(--danger); border-color: var(--danger); }
 
         /* Catalog */
-        .catalog-search { margin-bottom: 12px; }
         .catalog-list {
-            max-height: 160px; overflow-y: auto;
+            max-height: 150px; overflow-y: auto;
             border: 1px solid var(--border-default);
-            border-radius: 12px;
-            padding: 6px;
-            margin-bottom: 16px;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 14px;
         }
         .catalog-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 12px; border-radius: 8px;
+            display: flex; justify-content: space-between;
+            padding: 8px 12px; border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             font-size: 14px; color: var(--fg-primary);
         }
-        .catalog-item:hover {
-            background: var(--accent-subtle);
-        }
+        .catalog-item:hover { background: var(--accent-dim); }
         .catalog-item .cr {
             font-family: var(--font-mono);
             font-size: 11px; color: var(--accent);
         }
         .credit-options {
             display: flex; gap: 8px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
         .credit-option {
-            flex: 1; padding: 12px;
+            flex: 1; padding: 10px;
             border: 1px solid var(--border-default);
-            border-radius: 12px;
+            border-radius: 8px;
             text-align: center;
             cursor: pointer;
             font-family: var(--font-mono);
@@ -792,18 +655,17 @@
         .credit-option:hover { border-color: var(--accent); color: var(--fg-primary); }
         .credit-option.selected {
             background: var(--accent);
-            color: white;
+            color: var(--bg-primary);
             border-color: var(--accent);
-            box-shadow: 0 4px 20px var(--accent-glow);
         }
 
         /* Accordion */
         .accordion-trigger {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 16px 0;
+            padding: 14px 0;
             cursor: pointer;
             font-family: var(--font-mono);
-            font-size: 11px; font-weight: 700;
+            font-size: 10px; font-weight: 600;
             color: var(--fg-muted);
             letter-spacing: 0.1em;
             text-transform: uppercase;
@@ -819,46 +681,44 @@
         .accordion-body.open { display: block; animation: fadeUp 0.3s ease; }
         .calc-detail-row {
             display: flex; justify-content: space-between;
-            padding: 6px 0;
+            padding: 5px 0;
             font-family: var(--font-mono);
             font-size: 12px; color: var(--fg-secondary);
         }
         .calc-detail-row.total {
             border-top: 1px solid var(--border-default);
-            margin-top: 8px; padding-top: 10px;
+            margin-top: 6px; padding-top: 8px;
             color: var(--fg-primary); font-weight: 700;
         }
 
         /* Empty State */
         .empty-state {
-            text-align: center; padding: 48px 20px;
+            text-align: center; padding: 40px 20px;
             color: var(--fg-muted);
-        }
-        .empty-state p {
-            font-size: 16px;
+            font-style: italic;
+            font-family: var(--font-serif);
         }
 
         /* Navigation */
         .nav-bar {
-            position: fixed; bottom: 20px; left: 50%;
+            position: fixed; bottom: 16px; left: 50%;
             transform: translateX(-50%);
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px) saturate(1.5);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 12px;
             z-index: 100;
-            box-shadow: var(--shadow-lg);
-            padding: 8px;
+            padding: 6px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         .nav-inner {
             display: flex; gap: 4px;
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center;
-            gap: 4px; padding: 10px 24px;
-            border-radius: 14px;
+            gap: 4px; padding: 8px 20px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             border: none; background: none;
             color: var(--fg-muted);
             font-family: var(--font-mono);
@@ -866,49 +726,45 @@
             letter-spacing: 0.05em;
             text-transform: uppercase;
         }
-        .nav-item:hover { color: var(--fg-secondary); background: rgba(255,255,255,0.05); }
+        .nav-item:hover { color: var(--fg-secondary); background: rgba(255,255,255,0.03); }
         .nav-item.active {
             color: var(--accent);
-            background: var(--accent-subtle);
-            box-shadow: 0 0 20px var(--accent-glow);
+            background: var(--accent-dim);
         }
         .nav-item .nav-icon {
-            font-size: 20px;
+            font-size: 18px;
         }
-
-        /* Main Content */
-        .main { flex: 1; padding-bottom: 120px; }
 
         /* Tab Content */
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
 
+        /* Main */
+        .main { flex: 1; padding-bottom: 100px; }
+
         /* Responsive */
         @media (max-width: 640px) {
             .container { padding: 0 16px; }
-            .hero-gpa { font-size: 64px; }
-            .course-inputs { grid-template-columns: 1fr 80px; }
-            .semester-row { grid-template-columns: 1fr 70px 70px; gap: 8px; padding: 12px 14px; }
+            .gpa-hero .value { font-size: 56px; }
+            .course-table { font-size: 14px; }
+            .course-table th, .course-table td { padding: 10px 12px; }
+            .semester-row { grid-template-columns: 1fr 70px 70px; gap: 8px; padding: 12px; }
             .form-grid { grid-template-columns: 1fr; }
-            .target-result .result-value { font-size: 44px; }
-            .modal { padding: 24px; border-radius: 20px; }
-            .nav-item { padding: 8px 16px; }
-            .glass-card { padding: 20px; border-radius: 20px; }
+            .target-result .result-value { font-size: 40px; }
+            .modal { padding: 20px; }
+            .nav-item { padding: 8px 14px; }
+            .card { padding: 20px; }
         }
 
-        /* Utilities */
         .hidden { display: none !important; }
     </style>
 </head>
 <body data-theme="dark">
-    <div class="bg-mesh"></div>
-    <div class="cursor" id="cursor"></div>
-
     <div class="app">
         <header class="header">
             <div class="container header-inner">
                 <div class="brand">
-                    <div class="brand-logo">A</div>
+                    <div class="brand-seal">A</div>
                     <div class="brand-text">
                         <h1>ACT GPA Calculator</h1>
                         <span>Computer Science</span>
@@ -920,29 +776,29 @@
 
         <main class="main">
             <div class="container">
-                <!-- Hero GPA Display -->
-                <div class="hero anim-fade-up">
-                    <div class="hero-gpa" id="heroGpa">0.00</div>
-                    <div class="hero-label">Grade Point Average</div>
-                    <div class="hero-meta">
-                        <div class="hero-meta-item">
-                            <span class="label">Credits</span>
-                            <span class="value" id="heroCredits">0</span>
+                <!-- GPA Hero -->
+                <div class="gpa-hero anim-fade-up">
+                    <div class="value" id="heroGpa">0.00</div>
+                    <div class="label">Grade Point Average</div>
+                    <div class="gpa-meta">
+                        <div class="gpa-meta-item">
+                            <div class="num" id="heroCredits">0</div>
+                            <div class="lbl">Credits</div>
                         </div>
-                        <div class="hero-meta-item">
-                            <span class="label">Standing</span>
-                            <span class="value" id="heroStanding">—</span>
+                        <div class="gpa-meta-item">
+                            <div class="num" id="heroStanding">—</div>
+                            <div class="lbl">Standing</div>
                         </div>
-                        <div class="hero-meta-item">
-                            <span class="label">Major</span>
-                            <span class="value" id="heroMajor">—</span>
+                        <div class="gpa-meta-item">
+                            <div class="num" id="heroMajor">—</div>
+                            <div class="lbl">Major GPA</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- GPA TAB -->
                 <div class="tab-content active" id="tab-gpa">
-                    <div class="glass-card anim-fade-up anim-d1">
+                    <div class="card anim-fade-up anim-d1">
                         <div class="selector-row">
                             <div class="select-wrapper">
                                 <select id="semesterSelect"></select>
@@ -950,16 +806,26 @@
                             <div class="credit-badge" id="creditPill">0 / 21</div>
                         </div>
 
-                        <div class="progress-container">
-                            <div class="progress-track">
-                                <div class="progress-fill" id="gpaProgress" style="width:0%"></div>
-                            </div>
-                            <div class="progress-labels">
-                                <span>0.0</span><span>2.0</span><span>4.0</span>
-                            </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="gpaProgress" style="width:0%"></div>
+                        </div>
+                        <div class="progress-labels">
+                            <span>0.0</span><span>2.0</span><span>4.0</span>
                         </div>
 
-                        <div class="course-list" id="coursesList"></div>
+                        <div style="margin-top: 20px; overflow-x: auto;">
+                            <table class="course-table">
+                                <thead>
+                                    <tr>
+                                        <th>Course</th>
+                                        <th>Mark</th>
+                                        <th>Grade</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="coursesTableBody"></tbody>
+                            </table>
+                        </div>
 
                         <div class="action-row">
                             <button class="btn btn-secondary" onclick="openAddCourseModal()">+ Add Course</button>
@@ -992,9 +858,9 @@
                 <!-- TARGET TAB -->
                 <div class="tab-content" id="tab-target">
                     <h2 class="section-title anim-fade-up">Target Calculator</h2>
-                    <p class="section-subtitle anim-fade-up anim-d1">Find out what GPA you need to achieve your goal.</p>
+                    <p class="section-subtitle anim-fade-up anim-d1">Determine the GPA you need to reach your goal.</p>
 
-                    <div class="glass-card anim-fade-up anim-d2">
+                    <div class="card anim-fade-up anim-d2">
                         <div class="form-grid">
                             <div class="input-group">
                                 <label class="input-label">Current CGPA</label>
@@ -1013,7 +879,7 @@
                                 <input type="text" class="input-field" id="targetRemainingCredits" placeholder="42">
                             </div>
                         </div>
-                        <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="calculateTarget()">Calculate Required GPA</button>
+                        <button class="btn btn-primary" style="width:100%;margin-top:6px;" onclick="calculateTarget()">Calculate Required GPA</button>
                     </div>
 
                     <div id="targetResult"></div>
@@ -1021,7 +887,7 @@
             </div>
         </main>
 
-        <!-- Floating Navigation -->
+        <!-- Navigation -->
         <nav class="nav-bar">
             <div class="nav-inner">
                 <button class="nav-item active" data-tab="gpa" onclick="switchTab('gpa')">
@@ -1042,15 +908,15 @@
         <div class="modal">
             <button class="modal-close" onclick="closeAddCourseModal()">×</button>
             <h3 class="modal-title">Add Course</h3>
-            <div class="catalog-search">
+            <div style="margin-bottom: 12px;">
                 <input type="text" class="input-field" id="catalogSearch" placeholder="Search catalog..." oninput="filterCatalog()">
             </div>
             <div class="catalog-list" id="catalogList"></div>
-            <div style="margin-top:16px;">
+            <div style="margin-top: 14px;">
                 <label class="input-label">Or enter custom name</label>
                 <input type="text" class="input-field" id="customCourseName" placeholder="Course name">
             </div>
-            <div style="margin-top:16px;">
+            <div style="margin-top: 14px;">
                 <label class="input-label">Credits</label>
                 <div class="credit-options" id="creditOptions">
                     <div class="credit-option selected" data-cr="1" onclick="selectCredit(1)">1</div>
@@ -1059,7 +925,7 @@
                     <div class="credit-option" data-cr="4" onclick="selectCredit(4)">4</div>
                 </div>
             </div>
-            <div class="action-row" style="margin-top:20px;">
+            <div class="action-row" style="margin-top: 18px;">
                 <button class="btn btn-secondary" onclick="closeAddCourseModal()">Cancel</button>
                 <button class="btn btn-primary" onclick="addCourse()">Add</button>
             </div>
@@ -1067,32 +933,6 @@
     </div>
 
     <script>
-        // ===== CUSTOM CURSOR =====
-        const cursor = document.getElementById('cursor');
-        let mouseX = 0, mouseY = 0;
-        let cursorX = 0, cursorY = 0;
-
-        if (window.matchMedia('(pointer: fine)').matches) {
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-            });
-
-            function updateCursor() {
-                cursorX += (mouseX - cursorX) * 0.15;
-                cursorY += (mouseY - cursorY) * 0.15;
-                cursor.style.left = cursorX - 6 + 'px';
-                cursor.style.top = cursorY - 6 + 'px';
-                requestAnimationFrame(updateCursor);
-            }
-            updateCursor();
-
-            document.querySelectorAll('button, a, .course-card, .catalog-item, .credit-option, .toggle-track').forEach(el => {
-                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-            });
-        }
-
         // ===== DATA =====
         const SEMESTERS = [
             { id: 'Y1S1', year: 1, num: 1, name: 'Year 1 — Semester 1' },
@@ -1312,7 +1152,7 @@
 
             const detailsEl = document.getElementById('calcDetailsContent');
             if (detail.validCourses.length === 0) {
-                detailsEl.innerHTML = '<p style="color:var(--fg-muted);font-size:14px;">No courses with valid marks to show.</p>';
+                detailsEl.innerHTML = '<p style="color:var(--fg-muted);font-size:14px;font-family:var(--font-serif);font-style:italic;">No courses with valid marks to show.</p>';
             } else {
                 let html = ''; let totalGP = 0;
                 detail.validCourses.forEach(c => {
@@ -1325,43 +1165,42 @@
                 detailsEl.innerHTML = html;
             }
 
-            const listEl = document.getElementById('coursesList');
+            const tbody = document.getElementById('coursesTableBody');
             if (detail.courses.length === 0) {
-                listEl.innerHTML = '<div class="empty-state"><p>No courses. Reset or add custom ones.</p></div>';
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No courses. Reset or add custom ones.</td></tr>';
             } else {
-                listEl.innerHTML = detail.courses.map(c => renderCourseCard(c)).join('');
+                tbody.innerHTML = detail.courses.map(c => renderCourseRow(c)).join('');
             }
         }
 
-        function renderCourseCard(c) {
+        function renderCourseRow(c) {
             const [, gp] = c.mark != null ? convertMarkToGrade(c.mark) : ['', 0];
             const gradeClass = c.letterGrade ?
                 (c.letterGrade.startsWith('A') ? 'grade-A' : c.letterGrade.startsWith('B') ? 'grade-B' : c.letterGrade.startsWith('C') ? 'grade-C' : c.letterGrade.startsWith('D') ? 'grade-D' : 'grade-F') : '';
-            return `<div class="course-card ${!c.isIncluded ? 'excluded' : ''} ${c.isRetaken ? 'retaken' : ''}">
-                <div class="course-top">
-                    <div class="course-info">
-                        <input type="checkbox" class="course-checkbox" ${c.isIncluded ? 'checked' : ''} onchange="toggleInclusion('${c.id}')">
+            return `<tr class="${!c.isIncluded ? 'excluded' : ''} ${c.isRetaken ? 'retaken' : ''}">
+                <td>
+                    <div style="display:flex;align-items:flex-start;gap:10px;">
+                        <input type="checkbox" ${c.isIncluded ? 'checked' : ''} onchange="toggleInclusion('${c.id}')" style="accent-color:var(--accent);margin-top:3px;cursor:pointer;">
                         <div>
                             <div class="course-name">${c.name}</div>
-                            <div class="course-credits">${c.creditHours} Credits</div>
+                            <div class="course-credits">${c.creditHours} credits</div>
+                            <div style="margin-top:6px;display:flex;gap:16px;flex-wrap:wrap;">
+                                <label class="flag"><input type="checkbox" ${c.isMajor ? 'checked' : ''} onchange="toggleMajor('${c.id}')"><span>Major</span></label>
+                                <label class="flag retake"><input type="checkbox" ${c.isRetaken ? 'checked' : ''} onchange="toggleRetaken('${c.id}')"><span>Retake</span></label>
+                            </div>
                         </div>
                     </div>
-                    <div class="course-actions">
-                        ${c.letterGrade ? `<span class="grade-badge ${gradeClass}">${c.isRetaken ? 'RTK' : c.letterGrade}</span>` : ''}
-                        <button class="course-delete" onclick="deleteCourse('${c.id}')">×</button>
-                    </div>
-                </div>
-                <div class="course-inputs">
-                    <input type="text" class="course-input" placeholder="Mark (0-100) or Grade" value="${c.mark != null ? (c.mark % 1 === 0 ? c.mark.toString() : c.mark) : ''}" onchange="updateMark('${c.id}', this.value)" onblur="updateMark('${c.id}', this.value)">
-                    <select class="course-input" onchange="updateCredits('${c.id}', parseInt(this.value))">
-                        ${[1,2,3,4].map(cr => `<option value="${cr}" ${c.creditHours === cr ? 'selected' : ''}>${cr} cr</option>`).join('')}
-                    </select>
-                </div>
-                <div class="course-flags">
-                    <label class="flag"><input type="checkbox" ${c.isMajor ? 'checked' : ''} onchange="toggleMajor('${c.id}')"><span>Major Course</span></label>
-                    <label class="flag retake"><input type="checkbox" ${c.isRetaken ? 'checked' : ''} onchange="toggleRetaken('${c.id}')"><span>Retaken (Exclude)</span></label>
-                </div>
-            </div>`;
+                </td>
+                <td>
+                    <input type="text" class="course-input" placeholder="Mark" value="${c.mark != null ? (c.mark % 1 === 0 ? c.mark.toString() : c.mark) : ''}" onchange="updateMark('${c.id}', this.value)" onblur="updateMark('${c.id}', this.value)" style="width:80px;">
+                </td>
+                <td>
+                    ${c.letterGrade ? `<span class="grade-badge ${gradeClass}">${c.isRetaken ? 'RTK' : c.letterGrade}</span>` : '<span style="color:var(--fg-muted);font-family:var(--font-mono);font-size:12px;">—</span>'}
+                </td>
+                <td>
+                    <button class="course-delete" onclick="deleteCourse('${c.id}')">×</button>
+                </td>
+            </tr>`;
         }
 
         function renderCgpaTab() {
@@ -1473,7 +1312,7 @@
             const resultEl = document.getElementById('targetResult');
 
             if (currentCgpa <= 0 || targetCgpa <= 0 || remainingCredits <= 0) {
-                resultEl.innerHTML = '<div class="target-result unachievable" style="border-color:var(--warning);"><div class="result-label" style="background:var(--warning-bg);color:var(--warning)">Invalid Input</div><div class="result-detail">Please enter valid positive numbers for all fields.</div></div>';
+                resultEl.innerHTML = '<div class="target-result unachievable"><div class="result-label" style="background:var(--danger-bg);color:var(--danger)">Invalid Input</div><div class="result-detail">Please enter valid positive numbers for all fields.</div></div>';
                 return;
             }
             if (currentCgpa > 4 || targetCgpa > 4) {
