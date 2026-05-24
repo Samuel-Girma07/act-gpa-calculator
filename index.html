@@ -1,134 +1,114 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ACT GPA Calculator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* ============================================
-           IMPPECCABLE DESIGN SYSTEM
-           Register: Product (tool)
-           Scene: Student calculating GPA at night in
-           dorm room under desk lamp, or in bright
-           library during daytime study session.
-           ============================================ */
-
         :root {
-            /* OKLCH Primitive Tokens
-               Brand hue: 80 (warm amber)
-               Tinted neutrals toward brand hue
-               Chroma kept low for neutrals (0.005-0.01) */
-
-            /* Dark mode (default: night study session) */
-            --bg-primary: oklch(14% 0.005 80);
-            --bg-secondary: oklch(20% 0.008 80);
-            --bg-tertiary: oklch(26% 0.01 80);
-            --bg-elevated: oklch(22% 0.009 80);
-
-            --fg-primary: oklch(96% 0.005 80);
-            --fg-secondary: oklch(75% 0.01 80);
-            --fg-tertiary: oklch(55% 0.008 80);
-            --fg-muted: oklch(40% 0.006 80);
-
-            /* Accent: warm amber, used sparingly (Restrained strategy) */
-            --accent: oklch(72% 0.16 80);
-            --accent-hover: oklch(78% 0.18 80);
-            --accent-active: oklch(66% 0.14 80);
-            --accent-subtle: oklch(72% 0.16 80 / 0.1);
-
-            /* Semantic colors - tinted toward brand */
-            --success: oklch(65% 0.15 145);
-            --success-bg: oklch(65% 0.15 145 / 0.08);
-            --warning: oklch(70% 0.14 75);
-            --warning-bg: oklch(70% 0.14 75 / 0.08);
-            --danger: oklch(60% 0.18 25);
-            --danger-bg: oklch(60% 0.18 25 / 0.08);
-
-            --border-default: oklch(100% 0 80 / 0.06);
-            --border-hover: oklch(100% 0 80 / 0.12);
-            --border-focus: var(--accent);
-
-            /* Typography */
-            --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-serif: 'Instrument Serif', Georgia, serif;
-            --font-mono: 'JetBrains Mono', monospace;
-
-            /* Spacing: 4pt base */
-            --space-1: 4px;
-            --space-2: 8px;
-            --space-3: 12px;
-            --space-4: 16px;
-            --space-5: 20px;
-            --space-6: 24px;
-            --space-8: 32px;
-            --space-10: 40px;
-            --space-12: 48px;
-            --space-16: 64px;
-
-            /* Easing: exponential curves */
-            --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-            --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-
-            /* Durations */
-            --duration-instant: 120ms;
-            --duration-fast: 200ms;
-            --duration-normal: 300ms;
-            --duration-slow: 500ms;
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --fg-primary: #ffffff;
+            --fg-secondary: #a0a0b0;
+            --fg-muted: #6a6a7a;
+            --accent: #ff6b4a;
+            --accent-hover: #ff8568;
+            --accent-glow: rgba(255, 107, 74, 0.3);
+            --accent-subtle: rgba(255, 107, 74, 0.1);
+            --success: #4ade80;
+            --success-bg: rgba(74, 222, 128, 0.1);
+            --warning: #fbbf24;
+            --warning-bg: rgba(251, 191, 36, 0.1);
+            --danger: #f87171;
+            --danger-bg: rgba(248, 113, 113, 0.1);
+            --border-default: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'Space Mono', monospace;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+            --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
+            --shadow-glow: 0 0 40px var(--accent-glow);
         }
 
         [data-theme="light"] {
-            /* Light mode: library daytime study */
-            --bg-primary: oklch(97% 0.005 80);
-            --bg-secondary: oklch(93% 0.008 80);
-            --bg-tertiary: oklch(88% 0.01 80);
-            --bg-elevated: oklch(96% 0.007 80);
-
-            --fg-primary: oklch(18% 0.01 80);
-            --fg-secondary: oklch(45% 0.008 80);
-            --fg-tertiary: oklch(55% 0.006 80);
-            --fg-muted: oklch(70% 0.005 80);
-
-            --accent: oklch(55% 0.15 80);
-            --accent-hover: oklch(50% 0.14 80);
-            --accent-active: oklch(60% 0.16 80);
-            --accent-subtle: oklch(55% 0.15 80 / 0.08);
-
-            --border-default: oklch(18% 0.01 80 / 0.08);
-            --border-hover: oklch(18% 0.01 80 / 0.15);
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e9ecef;
+            --bg-glass: rgba(255, 255, 255, 0.7);
+            --fg-primary: #1a1a2e;
+            --fg-secondary: #495057;
+            --fg-muted: #adb5bd;
+            --accent: #e85d3c;
+            --accent-hover: #d44a2a;
+            --accent-glow: rgba(232, 93, 60, 0.2);
+            --accent-subtle: rgba(232, 93, 60, 0.08);
+            --border-default: rgba(0, 0, 0, 0.06);
+            --border-hover: rgba(0, 0, 0, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+            --shadow-glow: 0 0 40px var(--accent-glow);
         }
 
-        /* ============================================
-           RESET & BASE
-           ============================================ */
-        *, *::before, *::after {
-            margin: 0; padding: 0; box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         html { -webkit-tap-highlight-color: transparent; }
         body {
             font-family: var(--font-sans);
             background: var(--bg-primary);
             color: var(--fg-primary);
-            font-size: 15px;
-            line-height: 1.55;
             min-height: 100vh;
             overflow-x: hidden;
-            transition: background var(--duration-normal) var(--ease-out-quart),
-                        color var(--duration-normal) var(--ease-out-quart);
+            cursor: none;
+            transition: background 0.4s ease, color 0.4s ease;
         }
 
-        /* Scrollbar: minimal */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--fg-muted); border-radius: 2px; }
+        /* Custom Cursor */
+        .cursor {
+            width: 12px; height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
+        }
+        .cursor.hover {
+            width: 40px; height: 40px;
+            background: transparent;
+            border: 2px solid var(--accent);
+        }
+        @media (pointer: coarse) {
+            .cursor { display: none; }
+            body { cursor: auto; }
+        }
 
-        /* ============================================
-           ANIMATIONS
-           ============================================ */
+        /* Background Gradient Mesh */
+        .bg-mesh {
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(255,107,74,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(255,107,74,0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(100,100,255,0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--fg-muted); border-radius: 3px; }
+
+        /* Animations */
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
         @keyframes fadeIn {
@@ -136,402 +116,407 @@
             to { opacity: 1; }
         }
         @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.97); }
+            from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
         }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
 
-        .anim-fade-up {
-            animation: fadeUp var(--duration-slow) var(--ease-out-expo) forwards;
-            opacity: 0;
-        }
-        .anim-d1 { animation-delay: 40ms; }
-        .anim-d2 { animation-delay: 80ms; }
-        .anim-d3 { animation-delay: 120ms; }
-        .anim-d4 { animation-delay: 160ms; }
-        .anim-d5 { animation-delay: 200ms; }
+        .anim-fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .anim-d1 { animation-delay: 0.08s; }
+        .anim-d2 { animation-delay: 0.16s; }
+        .anim-d3 { animation-delay: 0.24s; }
+        .anim-d4 { animation-delay: 0.32s; }
 
-        /* ============================================
-           LAYOUT
-           ============================================ */
-        .app { min-height: 100vh; display: flex; flex-direction: column; }
-        .container {
-            max-width: 640px; margin: 0 auto;
-            padding: 0 var(--space-5);
-            width: 100%;
-        }
+        /* Layout */
+        .app { min-height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 1; }
+        .container { max-width: 720px; margin: 0 auto; padding: 0 24px; width: 100%; }
 
-        /* ============================================
-           HEADER
-           No hero-metric template. GPA integrated
-           naturally into header area.
-           ============================================ */
+        /* Header */
         .header {
             position: sticky; top: 0; z-index: 100;
-            background: var(--bg-primary);
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px) saturate(1.5);
             border-bottom: 1px solid var(--border-default);
-            backdrop-filter: blur(12px);
-            transition: all var(--duration-normal) var(--ease-out-quart);
+        }
+        [data-theme="light"] .header {
+            background: rgba(248, 249, 250, 0.8);
         }
         .header-inner {
             display: flex; align-items: center; justify-content: space-between;
-            padding: var(--space-4) 0;
+            padding: 16px 0;
         }
         .brand {
-            display: flex; align-items: center; gap: var(--space-3);
+            display: flex; align-items: center; gap: 12px;
         }
-        .brand-mark {
-            font-family: var(--font-serif);
-            font-size: 22px; font-weight: 400;
-            font-style: italic;
-            color: var(--accent);
-            line-height: 1;
+        .brand-logo {
+            width: 40px; height: 40px;
+            background: var(--accent);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 18px; font-weight: 700;
+            color: white;
+            box-shadow: 0 4px 20px var(--accent-glow);
         }
         .brand-text h1 {
-            font-family: var(--font-sans);
-            font-size: 15px; font-weight: 600;
+            font-size: 18px; font-weight: 700;
             color: var(--fg-primary);
-            line-height: 1.3;
-            letter-spacing: -0.01em;
+            line-height: 1.2;
         }
         .brand-text span {
             font-family: var(--font-mono);
-            font-size: 10px; font-weight: 500;
-            color: var(--fg-tertiary);
-            letter-spacing: 0.05em;
+            font-size: 10px; font-weight: 400;
+            color: var(--fg-muted);
+            letter-spacing: 0.1em;
             text-transform: uppercase;
         }
         .theme-toggle {
-            width: 36px; height: 36px;
-            border-radius: 8px;
+            width: 40px; height: 40px;
+            border-radius: 12px;
             border: 1px solid var(--border-default);
-            background: transparent;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
             color: var(--fg-secondary);
-            cursor: pointer;
+            cursor: none;
             display: flex; align-items: center; justify-content: center;
             font-size: 16px;
-            transition: all var(--duration-fast) var(--ease-out-quart);
+            transition: all 0.3s ease;
         }
         .theme-toggle:hover {
-            border-color: var(--border-hover);
-            color: var(--fg-primary);
-        }
-
-        /* ============================================
-           GPA SUMMARY (integrated, not hero-metric)
-           ============================================ */
-        .gpa-summary {
-            padding: var(--space-8) 0 var(--space-6);
-            border-bottom: 1px solid var(--border-default);
-            margin-bottom: var(--space-6);
-        }
-        .gpa-summary-inner {
-            display: flex; align-items: baseline; gap: var(--space-4);
-            flex-wrap: wrap;
-        }
-        .gpa-number {
-            font-family: var(--font-serif);
-            font-size: 56px; font-weight: 400;
-            color: var(--fg-primary);
-            line-height: 1;
-            letter-spacing: -0.03em;
-        }
-        .gpa-number .decimal {
-            font-size: 36px;
-            color: var(--fg-secondary);
-        }
-        .gpa-meta {
-            display: flex; flex-direction: column; gap: var(--space-1);
-            padding-top: var(--space-2);
-        }
-        .gpa-meta .label {
-            font-family: var(--font-mono);
-            font-size: 10px; font-weight: 500;
-            color: var(--fg-tertiary);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-        .gpa-meta .value {
-            font-family: var(--font-mono);
-            font-size: 14px; font-weight: 500;
-            color: var(--fg-secondary);
-        }
-        .gpa-standing {
-            margin-left: auto;
-            padding-top: var(--space-2);
-        }
-        .standing-tag {
-            display: inline-flex;
-            padding: var(--space-1) var(--space-3);
-            border: 1px solid;
-            border-radius: 4px;
-            font-family: var(--font-mono);
-            font-size: 10px; font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-        }
-        .standing-tag.president {
             border-color: var(--accent);
             color: var(--accent);
-            background: var(--accent-subtle);
-        }
-        .standing-tag.dean {
-            border-color: var(--success);
-            color: var(--success);
-            background: var(--success-bg);
-        }
-        .standing-tag.good {
-            border-color: var(--fg-muted);
-            color: var(--fg-tertiary);
-        }
-        .standing-tag.probation {
-            border-color: var(--danger);
-            color: var(--danger);
-            background: var(--danger-bg);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
 
-        /* ============================================
-           MAIN CONTENT
-           ============================================ */
-        .main {
-            flex: 1;
-            padding-bottom: calc(var(--space-16) + 60px);
+        /* Hero Section */
+        .hero {
+            padding: 40px 0 32px;
+            text-align: center;
         }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn var(--duration-normal) var(--ease-out-quart); }
-
-        /* ============================================
-           SECTION TITLE
-           ============================================ */
-        .section-title {
-            font-family: var(--font-serif);
-            font-size: 28px; font-weight: 400;
+        .hero-gpa {
+            font-family: var(--font-mono);
+            font-size: clamp(64px, 12vw, 96px);
+            font-weight: 700;
             color: var(--fg-primary);
-            line-height: 1.2;
-            margin-bottom: var(--space-2);
-            letter-spacing: -0.02em;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, var(--fg-primary) 0%, var(--fg-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-label {
+            font-family: var(--font-mono);
+            font-size: 12px; font-weight: 400;
+            color: var(--fg-muted);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 12px;
+        }
+        .hero-meta {
+            display: flex; justify-content: center; gap: 24px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .hero-meta-item {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 4px;
+        }
+        .hero-meta-item .label {
+            font-family: var(--font-mono);
+            font-size: 10px; color: var(--fg-muted);
+            letter-spacing: 0.1em; text-transform: uppercase;
+        }
+        .hero-meta-item .value {
+            font-family: var(--font-mono);
+            font-size: 14px; font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px) saturate(1.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 24px; font-weight: 700;
+            color: var(--fg-primary);
+            margin-bottom: 8px;
         }
         .section-subtitle {
             font-size: 14px;
             color: var(--fg-secondary);
-            margin-bottom: var(--space-6);
-            max-width: 45ch;
+            margin-bottom: 24px;
         }
 
-        /* ============================================
-           SELECTOR
-           ============================================ */
+        /* Selector */
         .selector-row {
-            display: flex; align-items: center; gap: var(--space-3);
-            margin-bottom: var(--space-5);
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
         .select-wrapper {
-            position: relative; flex: 1; min-width: 220px;
+            position: relative; flex: 1; min-width: 200px;
         }
         .select-wrapper select {
             appearance: none; width: 100%;
-            background: var(--bg-secondary);
+            background: var(--bg-tertiary);
             border: 1px solid var(--border-default);
-            border-radius: 8px;
-            padding: var(--space-3) var(--space-10) var(--space-3) var(--space-4);
+            border-radius: 16px;
+            padding: 14px 44px 14px 20px;
             font-family: var(--font-sans);
-            font-size: 14px; font-weight: 500;
+            font-size: 14px; font-weight: 600;
             color: var(--fg-primary);
-            cursor: pointer;
-            transition: all var(--duration-fast) var(--ease-out-quart);
+            cursor: none;
+            transition: all 0.3s ease;
         }
         .select-wrapper select:hover, .select-wrapper select:focus {
-            border-color: var(--border-hover);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
             outline: none;
         }
         .select-wrapper::after {
             content: "↓";
-            position: absolute; right: var(--space-4); top: 50%;
+            position: absolute; right: 16px; top: 50%;
             transform: translateY(-50%);
-            font-family: var(--font-mono);
-            font-size: 12px; color: var(--fg-tertiary);
+            font-size: 14px; color: var(--accent);
             pointer-events: none;
         }
-        .credit-pill {
-            padding: var(--space-2) var(--space-3);
-            border: 1px solid var(--border-default);
-            border-radius: 6px;
+        .credit-badge {
+            padding: 10px 20px;
+            background: var(--accent-subtle);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
             font-family: var(--font-mono);
-            font-size: 11px; font-weight: 500;
-            color: var(--fg-secondary);
+            font-size: 12px; font-weight: 700;
+            color: var(--accent);
         }
-        .credit-pill.warning {
-            color: var(--danger);
-            border-color: var(--danger);
+        .credit-badge.warning {
             background: var(--danger-bg);
+            border-color: var(--danger);
+            color: var(--danger);
         }
 
-        /* ============================================
-           PROGRESS BAR
-           ============================================ */
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 24px;
+        }
         .progress-track {
-            height: 3px;
+            height: 8px;
             background: var(--bg-tertiary);
-            border-radius: 2px;
+            border-radius: 4px;
             overflow: hidden;
-            margin-bottom: var(--space-6);
+            position: relative;
         }
         .progress-fill {
             height: 100%;
             background: var(--accent);
-            border-radius: 2px;
-            transition: width 0.8s var(--ease-out-expo);
+            border-radius: 4px;
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 20px var(--accent-glow);
+            position: relative;
+        }
+        .progress-fill::after {
+            content: '';
+            position: absolute; right: 0; top: -4px;
+            width: 16px; height: 16px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .progress-labels {
+            display: flex; justify-content: space-between;
+            margin-top: 8px;
+            font-family: var(--font-mono);
+            font-size: 11px; color: var(--fg-muted);
         }
 
-        /* ============================================
-           COURSE LIST (no cards, no side-stripes)
-           Uses spacing and typography for hierarchy.
-           ============================================ */
-        .course-list {
-            display: flex; flex-direction: column;
-            gap: var(--space-1);
+        /* Course Cards */
+        .course-list { display: flex; flex-direction: column; gap: 12px; }
+        .course-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .course-item {
-            padding: var(--space-4) 0;
-            border-bottom: 1px solid var(--border-default);
-            transition: opacity var(--duration-fast) var(--ease-out-quart);
+        .course-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
         }
-        .course-item:first-child {
-            border-top: 1px solid var(--border-default);
+        .course-card:hover::before {
+            transform: scaleX(1);
         }
-        .course-item.excluded { opacity: 0.35; }
-        .course-item.retaken { opacity: 0.45; }
-        .course-item.retaken .course-name { text-decoration: line-through; }
+        .course-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        .course-card.excluded { opacity: 0.4; }
+        .course-card.retaken { opacity: 0.5; }
+        .course-card.retaken .course-name { text-decoration: line-through; }
 
         .course-top {
             display: flex; justify-content: space-between; align-items: flex-start;
-            margin-bottom: var(--space-3);
+            margin-bottom: 14px;
         }
         .course-info {
-            display: flex; align-items: flex-start; gap: var(--space-3);
+            display: flex; align-items: flex-start; gap: 12px;
             flex: 1;
         }
         .course-checkbox {
-            width: 16px; height: 16px;
+            width: 20px; height: 20px;
             accent-color: var(--accent);
-            margin-top: 3px; flex-shrink: 0;
-            cursor: pointer;
+            margin-top: 2px; flex-shrink: 0;
+            cursor: none;
         }
         .course-name {
-            font-family: var(--font-sans);
-            font-size: 15px; font-weight: 500;
+            font-size: 16px; font-weight: 600;
             color: var(--fg-primary);
-            line-height: 1.4;
+            line-height: 1.3;
         }
         .course-credits {
             font-family: var(--font-mono);
-            font-size: 10px; color: var(--fg-tertiary);
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            margin-top: var(--space-1);
+            font-size: 11px; color: var(--fg-muted);
+            margin-top: 4px;
         }
         .course-actions {
-            display: flex; align-items: center; gap: var(--space-2);
+            display: flex; align-items: center; gap: 8px;
             flex-shrink: 0;
         }
-        .grade-tag {
-            padding: 2px 8px;
-            border: 1px solid;
-            border-radius: 4px;
+        .grade-badge {
+            padding: 4px 12px;
+            border-radius: 8px;
             font-family: var(--font-mono);
-            font-size: 11px; font-weight: 600;
+            font-size: 12px; font-weight: 700;
         }
-        .grade-A { border-color: var(--success); color: var(--success); }
-        .grade-B { border-color: var(--accent); color: var(--accent); }
-        .grade-C { border-color: var(--warning); color: var(--warning); }
-        .grade-D { border-color: var(--danger); color: #C45B6A; }
-        .grade-F { border-color: var(--danger); color: var(--danger); }
+        .grade-A { background: var(--success-bg); color: var(--success); }
+        .grade-B { background: var(--accent-subtle); color: var(--accent); }
+        .grade-C { background: var(--warning-bg); color: var(--warning); }
+        .grade-D { background: var(--danger-bg); color: var(--danger); }
+        .grade-F { background: var(--danger-bg); color: var(--danger); }
         .course-delete {
-            width: 24px; height: 24px;
-            border: none; background: transparent;
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
             color: var(--fg-muted);
-            cursor: pointer; font-size: 18px;
+            cursor: none;
             display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
             opacity: 0;
-            transition: all var(--duration-fast) var(--ease-out-quart);
-            border-radius: 4px;
+            transition: all 0.2s ease;
         }
-        .course-item:hover .course-delete { opacity: 1; }
-        .course-delete:hover { color: var(--danger); background: var(--danger-bg); }
+        .course-card:hover .course-delete { opacity: 1; }
+        .course-delete:hover { background: var(--danger-bg); color: var(--danger); }
 
         .course-inputs {
-            display: grid; grid-template-columns: 1fr 90px;
-            gap: var(--space-2);
-            margin-bottom: var(--space-3);
+            display: grid; grid-template-columns: 1fr 110px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
         .course-input {
             width: 100%;
-            padding: var(--space-2) var(--space-3);
-            background: var(--bg-primary);
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
             border: 1px solid var(--border-default);
-            border-radius: 6px;
+            border-radius: 12px;
             color: var(--fg-primary);
             font-family: var(--font-mono);
-            font-size: 13px;
-            transition: all var(--duration-fast) var(--ease-out-quart);
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
         .course-input:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-subtle);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
         .course-input::placeholder { color: var(--fg-muted); }
         .course-flags {
-            display: flex; gap: var(--space-5); flex-wrap: wrap;
+            display: flex; gap: 20px; flex-wrap: wrap;
         }
         .flag {
-            display: flex; align-items: center; gap: var(--space-1);
+            display: flex; align-items: center; gap: 6px;
             font-size: 13px; color: var(--fg-secondary);
-            cursor: pointer;
-            transition: color var(--duration-fast) var(--ease-out-quart);
+            cursor: none;
+            transition: color 0.2s ease;
         }
         .flag:hover { color: var(--fg-primary); }
-        .flag input { accent-color: var(--accent); cursor: pointer; }
+        .flag input { accent-color: var(--accent); cursor: none; }
         .flag.retake input { accent-color: var(--danger); }
 
-        /* ============================================
-           BUTTONS
-           ============================================ */
+        /* Buttons */
         .btn {
             display: inline-flex; align-items: center; justify-content: center;
-            gap: var(--space-2); padding: var(--space-3) var(--space-5);
-            border-radius: 8px;
+            gap: 8px; padding: 14px 24px;
+            border-radius: 16px;
             font-family: var(--font-sans);
-            font-size: 13px; font-weight: 600;
-            cursor: pointer;
-            transition: all var(--duration-fast) var(--ease-out-quart);
+            font-size: 14px; font-weight: 600;
+            cursor: none;
+            transition: all 0.3s ease;
             border: none;
+            position: relative;
+            overflow: hidden;
         }
+        .btn::before {
+            content: '';
+            position: absolute; top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+        .btn:active::before { width: 300px; height: 300px; }
         .btn-primary {
             background: var(--accent);
-            color: var(--bg-primary);
+            color: white;
+            box-shadow: 0 4px 20px var(--accent-glow);
         }
         .btn-primary:hover {
             background: var(--accent-hover);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--accent-glow);
         }
-        .btn-primary:active {
-            background: var(--accent-active);
-            transform: translateY(0);
-            transition-duration: var(--duration-instant);
-        }
+        .btn-primary:active { transform: translateY(0) scale(0.98); }
         .btn-secondary {
-            background: transparent;
+            background: var(--bg-tertiary);
             color: var(--fg-secondary);
             border: 1px solid var(--border-default);
         }
         .btn-secondary:hover {
-            border-color: var(--border-hover);
-            color: var(--fg-primary);
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
         .btn-danger {
             background: transparent;
@@ -542,116 +527,134 @@
             background: var(--danger-bg);
         }
         .action-row {
-            display: flex; gap: var(--space-2);
-            margin-top: var(--space-5);
+            display: flex; gap: 10px;
+            margin-top: 20px;
             flex-wrap: wrap;
         }
-        .action-row .btn { flex: 1; min-width: 130px; }
+        .action-row .btn { flex: 1; min-width: 140px; }
 
-        /* ============================================
-           SEMESTER ROWS (CGPA)
-           ============================================ */
+        /* Semester Rows */
         .semester-row {
             display: grid;
-            grid-template-columns: 1fr 80px 80px;
-            gap: var(--space-3);
+            grid-template-columns: 1fr 90px 90px;
+            gap: 12px;
             align-items: center;
-            padding: var(--space-3) 0;
-            border-bottom: 1px solid var(--border-default);
-            transition: opacity var(--duration-fast) var(--ease-out-quart);
+            padding: 16px 20px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
         }
-        .semester-row:first-child {
-            border-top: 1px solid var(--border-default);
+        .semester-row:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-md);
         }
-        .semester-row.excluded { opacity: 0.3; }
+        .semester-row.excluded { opacity: 0.35; }
         .semester-name {
-            display: flex; align-items: center; gap: var(--space-3);
+            display: flex; align-items: center; gap: 12px;
         }
         .toggle-track {
-            width: 32px; height: 18px;
+            width: 40px; height: 22px;
             background: var(--fg-muted);
-            border-radius: 9px;
+            border-radius: 11px;
             position: relative;
-            cursor: pointer;
+            cursor: none;
             flex-shrink: 0;
-            transition: background var(--duration-fast) var(--ease-out-quart);
+            transition: all 0.3s ease;
         }
-        .toggle-track.on { background: var(--accent); }
+        .toggle-track.on {
+            background: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
         .toggle-track::after {
             content: '';
             position: absolute; top: 2px; left: 2px;
-            width: 14px; height: 14px;
-            background: var(--fg-primary);
+            width: 18px; height: 18px;
+            background: white;
             border-radius: 50%;
-            transition: transform var(--duration-fast) var(--ease-out-quart);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
-        .toggle-track.on::after { transform: translateX(14px); }
+        .toggle-track.on::after { transform: translateX(18px); }
         .semester-name label {
-            font-size: 14px; font-weight: 500;
+            font-size: 15px; font-weight: 600;
             color: var(--fg-primary);
-            cursor: pointer;
+            cursor: none;
         }
         .semester-input {
             width: 100%;
-            padding: var(--space-2) var(--space-2);
-            background: var(--bg-primary);
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
             border: 1px solid var(--border-default);
-            border-radius: 6px;
+            border-radius: 10px;
             color: var(--fg-primary);
             font-family: var(--font-mono);
-            font-size: 12px;
+            font-size: 13px;
             text-align: center;
-            transition: all var(--duration-fast) var(--ease-out-quart);
+            transition: all 0.3s ease;
         }
         .semester-input:focus {
             outline: none;
             border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
 
-        /* ============================================
-           TARGET RESULT
-           ============================================ */
+        /* Target Result */
         .target-result {
-            padding: var(--space-8) var(--space-6);
+            padding: 40px 32px;
             text-align: center;
-            border: 1px solid;
-            border-radius: 12px;
-            margin-top: var(--space-6);
-            animation: scaleIn var(--duration-slow) var(--ease-out-expo);
+            border-radius: 24px;
+            margin-top: 24px;
+            animation: scaleIn 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .target-result::before {
+            content: '';
+            position: absolute; inset: 0;
+            border-radius: 24px;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--accent), transparent 50%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
         }
         .target-result.achievable {
-            border-color: var(--success);
             background: var(--success-bg);
         }
         .target-result.unachievable {
-            border-color: var(--danger);
             background: var(--danger-bg);
         }
         .target-result .result-label {
             font-family: var(--font-mono);
-            font-size: 10px; font-weight: 600;
-            letter-spacing: 0.1em;
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 0.15em;
             text-transform: uppercase;
-            margin-bottom: var(--space-4);
-            padding: var(--space-1) var(--space-3);
-            border: 1px solid;
+            margin-bottom: 16px;
+            padding: 6px 16px;
+            border-radius: 8px;
             display: inline-block;
-            border-radius: 4px;
         }
         .target-result.achievable .result-label {
-            border-color: var(--success); color: var(--success);
+            background: var(--success-bg);
+            color: var(--success);
         }
         .target-result.unachievable .result-label {
-            border-color: var(--danger); color: var(--danger);
+            background: var(--danger-bg);
+            color: var(--danger);
         }
         .target-result .result-value {
-            font-family: var(--font-serif);
-            font-size: 48px; font-weight: 400;
+            font-family: var(--font-mono);
+            font-size: 56px; font-weight: 700;
             line-height: 1;
-            margin-bottom: var(--space-2);
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--fg-primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .target-result.achievable .result-value { color: var(--accent); }
-        .target-result.unachievable .result-value { color: var(--danger); }
         .target-result .result-detail {
             font-size: 14px;
             color: var(--fg-secondary);
@@ -659,208 +662,242 @@
             line-height: 1.6;
         }
 
-        /* ============================================
-           INPUTS
-           ============================================ */
-        .input-group { margin-bottom: var(--space-4); }
+        /* Inputs */
+        .input-group { margin-bottom: 16px; }
         .input-label {
             font-family: var(--font-mono);
-            font-size: 10px; font-weight: 500;
-            color: var(--fg-tertiary);
-            letter-spacing: 0.08em;
+            font-size: 11px; font-weight: 700;
+            color: var(--fg-muted);
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            margin-bottom: var(--space-2);
+            margin-bottom: 8px;
             display: block;
         }
         .input-field {
             width: 100%;
-            padding: var(--space-3) var(--space-4);
-            background: var(--bg-secondary);
+            padding: 14px 18px;
+            background: var(--bg-tertiary);
             border: 1px solid var(--border-default);
-            border-radius: 8px;
+            border-radius: 16px;
             color: var(--fg-primary);
             font-family: var(--font-mono);
             font-size: 14px;
-            transition: all var(--duration-fast) var(--ease-out-quart);
+            transition: all 0.3s ease;
         }
         .input-field:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-subtle);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
         .input-field::placeholder { color: var(--fg-muted); }
 
-        /* ============================================
-           FORM GRID
-           ============================================ */
+        /* Form Grid */
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: var(--space-4);
+            gap: 16px;
         }
 
-        /* ============================================
-           ADD COURSE (inline, not modal)
-           ============================================ */
-        .add-course-area {
-            margin-top: var(--space-5);
-            padding-top: var(--space-5);
-            border-top: 1px solid var(--border-default);
+        /* Add Course Modal */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s ease;
         }
-        .catalog-search {
-            margin-bottom: var(--space-3);
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 480px; width: 100%;
+            max-height: 85vh; overflow-y: auto;
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
         }
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+        }
+        .modal-title {
+            font-size: 24px; font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--fg-primary);
+        }
+        .modal-close {
+            position: absolute; top: 16px; right: 16px;
+            width: 36px; height: 36px;
+            border-radius: 12px;
+            border: 1px solid var(--border-default);
+            background: transparent;
+            color: var(--fg-muted);
+            cursor: none;
+            font-size: 20px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .modal-close:hover { color: var(--danger); border-color: var(--danger); }
+
+        /* Catalog */
+        .catalog-search { margin-bottom: 12px; }
         .catalog-list {
             max-height: 160px; overflow-y: auto;
             border: 1px solid var(--border-default);
-            border-radius: 8px;
-            padding: var(--space-1);
-            margin-bottom: var(--space-4);
+            border-radius: 12px;
+            padding: 6px;
+            margin-bottom: 16px;
         }
         .catalog-item {
             display: flex; justify-content: space-between; align-items: center;
-            padding: var(--space-2) var(--space-3);
-            cursor: pointer;
-            transition: background var(--duration-fast) var(--ease-out-quart);
-            font-size: 13px; color: var(--fg-primary);
-            border-radius: 4px;
+            padding: 8px 12px; border-radius: 8px;
+            cursor: none;
+            transition: all 0.2s ease;
+            font-size: 14px; color: var(--fg-primary);
         }
-        .catalog-item:hover { background: var(--accent-subtle); }
+        .catalog-item:hover {
+            background: var(--accent-subtle);
+        }
         .catalog-item .cr {
             font-family: var(--font-mono);
-            font-size: 10px; color: var(--accent);
-            letter-spacing: 0.05em;
+            font-size: 11px; color: var(--accent);
         }
         .credit-options {
-            display: flex; gap: var(--space-2);
-            margin-bottom: var(--space-4);
+            display: flex; gap: 8px;
+            margin-bottom: 16px;
         }
         .credit-option {
-            flex: 1; padding: var(--space-2);
+            flex: 1; padding: 12px;
             border: 1px solid var(--border-default);
-            border-radius: 6px;
+            border-radius: 12px;
             text-align: center;
-            cursor: pointer;
+            cursor: none;
             font-family: var(--font-mono);
-            font-weight: 600;
-            font-size: 13px;
-            color: var(--fg-tertiary);
-            transition: all var(--duration-fast) var(--ease-out-quart);
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--fg-muted);
+            transition: all 0.2s ease;
         }
         .credit-option:hover { border-color: var(--accent); color: var(--fg-primary); }
         .credit-option.selected {
             background: var(--accent);
-            color: var(--bg-primary);
+            color: white;
             border-color: var(--accent);
+            box-shadow: 0 4px 20px var(--accent-glow);
         }
 
-        /* ============================================
-           ACCORDION
-           ============================================ */
+        /* Accordion */
         .accordion-trigger {
             display: flex; justify-content: space-between; align-items: center;
-            padding: var(--space-3) 0;
-            cursor: pointer;
+            padding: 16px 0;
+            cursor: none;
             font-family: var(--font-mono);
-            font-size: 10px; font-weight: 600;
-            color: var(--fg-tertiary);
-            letter-spacing: 0.08em;
+            font-size: 11px; font-weight: 700;
+            color: var(--fg-muted);
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            margin-top: var(--space-4);
-            transition: color var(--duration-fast) var(--ease-out-quart);
+            border-top: 1px solid var(--border-default);
+            margin-top: 16px;
+            transition: color 0.2s ease;
         }
         .accordion-trigger:hover { color: var(--accent); }
         .accordion-body {
             display: none;
-            padding-bottom: var(--space-2);
+            padding-bottom: 8px;
         }
-        .accordion-body.open { display: block; animation: slideDown var(--duration-normal) var(--ease-out-quart); }
+        .accordion-body.open { display: block; animation: fadeUp 0.3s ease; }
         .calc-detail-row {
             display: flex; justify-content: space-between;
-            padding: var(--space-1) 0;
+            padding: 6px 0;
             font-family: var(--font-mono);
             font-size: 12px; color: var(--fg-secondary);
         }
         .calc-detail-row.total {
             border-top: 1px solid var(--border-default);
-            margin-top: var(--space-2); padding-top: var(--space-2);
-            color: var(--fg-primary); font-weight: 600;
+            margin-top: 8px; padding-top: 10px;
+            color: var(--fg-primary); font-weight: 700;
         }
 
-        /* ============================================
-           EMPTY STATE
-           ============================================ */
+        /* Empty State */
         .empty-state {
-            text-align: center; padding: var(--space-10) var(--space-5);
-            color: var(--fg-tertiary);
+            text-align: center; padding: 48px 20px;
+            color: var(--fg-muted);
         }
         .empty-state p {
-            font-family: var(--font-serif);
-            font-size: 16px; font-style: italic;
+            font-size: 16px;
         }
 
-        /* ============================================
-           NAVIGATION
-           ============================================ */
+        /* Navigation */
         .nav-bar {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--bg-primary);
-            border-top: 1px solid var(--border-default);
+            position: fixed; bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px) saturate(1.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
             z-index: 100;
-            backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-lg);
+            padding: 8px;
         }
         .nav-inner {
-            max-width: 640px; margin: 0 auto;
-            display: flex; justify-content: space-around;
-            padding: var(--space-2) var(--space-4) var(--space-3);
+            display: flex; gap: 4px;
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center;
-            gap: var(--space-1); padding: var(--space-2) var(--space-4);
-            cursor: pointer;
-            transition: all var(--duration-fast) var(--ease-out-quart);
+            gap: 4px; padding: 10px 24px;
+            border-radius: 14px;
+            cursor: none;
+            transition: all 0.3s ease;
             border: none; background: none;
             color: var(--fg-muted);
             font-family: var(--font-mono);
-            font-size: 9px; font-weight: 600;
-            letter-spacing: 0.1em;
+            font-size: 10px; font-weight: 600;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
         }
-        .nav-item:hover { color: var(--fg-secondary); }
-        .nav-item.active { color: var(--accent); }
+        .nav-item:hover { color: var(--fg-secondary); background: rgba(255,255,255,0.05); }
+        .nav-item.active {
+            color: var(--accent);
+            background: var(--accent-subtle);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
         .nav-item .nav-icon {
-            font-size: 18px;
-            opacity: 0.6;
-            transition: opacity var(--duration-fast) var(--ease-out-quart);
+            font-size: 20px;
         }
-        .nav-item.active .nav-icon { opacity: 1; }
 
-        /* ============================================
-           RESPONSIVE
-           ============================================ */
+        /* Main Content */
+        .main { flex: 1; padding-bottom: 120px; }
+
+        /* Responsive */
         @media (max-width: 640px) {
-            .gpa-summary-inner { flex-direction: column; gap: var(--space-2); }
-            .gpa-standing { margin-left: 0; }
-            .course-inputs { grid-template-columns: 1fr 70px; }
-            .semester-row { grid-template-columns: 1fr 70px 70px; gap: var(--space-2); }
+            .container { padding: 0 16px; }
+            .hero-gpa { font-size: 64px; }
+            .course-inputs { grid-template-columns: 1fr 80px; }
+            .semester-row { grid-template-columns: 1fr 70px 70px; gap: 8px; padding: 12px 14px; }
             .form-grid { grid-template-columns: 1fr; }
-            .target-result .result-value { font-size: 40px; }
-            .gpa-number { font-size: 48px; }
-            .gpa-number .decimal { font-size: 30px; }
+            .target-result .result-value { font-size: 44px; }
+            .modal { padding: 24px; border-radius: 20px; }
+            .nav-item { padding: 8px 16px; }
+            .glass-card { padding: 20px; border-radius: 20px; }
         }
 
-        /* ============================================
-           UTILITIES
-           ============================================ */
+        /* Utilities */
         .hidden { display: none !important; }
     </style>
 </head>
-<body>
+<body data-theme="dark">
+    <div class="bg-mesh"></div>
+    <div class="cursor" id="cursor"></div>
+
     <div class="app">
         <header class="header">
             <div class="container header-inner">
                 <div class="brand">
-                    <span class="brand-mark">A</span>
+                    <div class="brand-logo">A</div>
                     <div class="brand-text">
                         <h1>ACT GPA Calculator</h1>
                         <span>Computer Science</span>
@@ -872,70 +909,59 @@
 
         <main class="main">
             <div class="container">
-                <!-- GPA SUMMARY (integrated, not hero-metric) -->
-                <div class="gpa-summary">
-                    <div class="gpa-summary-inner">
-                        <div class="gpa-number" id="gpaValue">0<span class="decimal">.00</span></div>
-                        <div class="gpa-meta">
-                            <span class="label">Grade Point Average</span>
-                            <span class="value" id="majorGpaDisplay"></span>
+                <!-- Hero GPA Display -->
+                <div class="hero anim-fade-up">
+                    <div class="hero-gpa" id="heroGpa">0.00</div>
+                    <div class="hero-label">Grade Point Average</div>
+                    <div class="hero-meta">
+                        <div class="hero-meta-item">
+                            <span class="label">Credits</span>
+                            <span class="value" id="heroCredits">0</span>
                         </div>
-                        <div class="gpa-standing" id="standingContainer"></div>
+                        <div class="hero-meta-item">
+                            <span class="label">Standing</span>
+                            <span class="value" id="heroStanding">—</span>
+                        </div>
+                        <div class="hero-meta-item">
+                            <span class="label">Major</span>
+                            <span class="value" id="heroMajor">—</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- GPA TAB -->
                 <div class="tab-content active" id="tab-gpa">
-                    <div class="selector-row anim-fade-up anim-d1">
-                        <div class="select-wrapper">
-                            <select id="semesterSelect"></select>
+                    <div class="glass-card anim-fade-up anim-d1">
+                        <div class="selector-row">
+                            <div class="select-wrapper">
+                                <select id="semesterSelect"></select>
+                            </div>
+                            <div class="credit-badge" id="creditPill">0 / 21</div>
                         </div>
-                        <div class="credit-pill" id="creditPill">0 / 21 CR</div>
-                    </div>
 
-                    <div class="progress-track anim-fade-up anim-d2">
-                        <div class="progress-fill" id="gpaProgress" style="width:0%"></div>
-                    </div>
+                        <div class="progress-container">
+                            <div class="progress-track">
+                                <div class="progress-fill" id="gpaProgress" style="width:0%"></div>
+                            </div>
+                            <div class="progress-labels">
+                                <span>0.0</span><span>2.0</span><span>4.0</span>
+                            </div>
+                        </div>
 
-                    <div class="anim-fade-up anim-d3">
                         <div class="course-list" id="coursesList"></div>
 
-                        <div class="add-course-area" id="addCourseArea" style="display:none;">
-                            <div class="catalog-search">
-                                <input type="text" class="input-field" id="catalogSearch" placeholder="Search catalog..." oninput="filterCatalog()">
-                            </div>
-                            <div class="catalog-list" id="catalogList"></div>
-                            <div class="input-group">
-                                <label class="input-label">Or enter custom name</label>
-                                <input type="text" class="input-field" id="customCourseName" placeholder="Course name">
-                            </div>
-                            <div class="input-group">
-                                <label class="input-label">Credits</label>
-                                <div class="credit-options" id="creditOptions">
-                                    <div class="credit-option selected" data-cr="1" onclick="selectCredit(1)">1</div>
-                                    <div class="credit-option" data-cr="2" onclick="selectCredit(2)">2</div>
-                                    <div class="credit-option" data-cr="3" onclick="selectCredit(3)">3</div>
-                                    <div class="credit-option" data-cr="4" onclick="selectCredit(4)">4</div>
-                                </div>
-                            </div>
-                            <div class="action-row">
-                                <button class="btn btn-secondary" onclick="closeAddCourse()">Cancel</button>
-                                <button class="btn btn-primary" onclick="addCourse()">Add Course</button>
-                            </div>
+                        <div class="action-row">
+                            <button class="btn btn-secondary" onclick="openAddCourseModal()">+ Add Course</button>
+                            <button class="btn btn-primary" onclick="resetSemester()">↻ Reset</button>
                         </div>
 
-                        <div class="action-row" id="mainActions">
-                            <button class="btn btn-secondary" onclick="openAddCourse()">+ Add Course</button>
-                            <button class="btn btn-secondary" onclick="resetSemester()">↻ Reset</button>
+                        <div class="accordion-trigger" onclick="toggleAccordion(this)">
+                            <span>View Calculation Details</span>
+                            <span id="accordionArrow">↓</span>
                         </div>
-                    </div>
-
-                    <div class="accordion-trigger" onclick="toggleAccordion(this)">
-                        <span>Calculation Details</span>
-                        <span id="accordionArrow">↓</span>
-                    </div>
-                    <div class="accordion-body" id="calcDetails">
-                        <div id="calcDetailsContent"></div>
+                        <div class="accordion-body" id="calcDetails">
+                            <div id="calcDetailsContent"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -955,16 +981,16 @@
                 <!-- TARGET TAB -->
                 <div class="tab-content" id="tab-target">
                     <h2 class="section-title anim-fade-up">Target Calculator</h2>
-                    <p class="section-subtitle anim-fade-up anim-d1">Determine what GPA you need in remaining courses to hit your goal.</p>
+                    <p class="section-subtitle anim-fade-up anim-d1">Find out what GPA you need to achieve your goal.</p>
 
-                    <div class="anim-fade-up anim-d2" style="background:var(--bg-secondary);border:1px solid var(--border-default);border-radius:12px;padding:var(--space-6);">
+                    <div class="glass-card anim-fade-up anim-d2">
                         <div class="form-grid">
                             <div class="input-group">
                                 <label class="input-label">Current CGPA</label>
                                 <input type="text" class="input-field" id="targetCurrentCgpa" placeholder="3.25">
                             </div>
                             <div class="input-group">
-                                <label class="input-label">Credits Completed</label>
+                                <label class="input-label">Credits Done</label>
                                 <input type="text" class="input-field" id="targetDoneCredits" placeholder="78">
                             </div>
                             <div class="input-group">
@@ -972,11 +998,11 @@
                                 <input type="text" class="input-field" id="targetCgpaInput" placeholder="3.75">
                             </div>
                             <div class="input-group">
-                                <label class="input-label">Credits Remaining</label>
+                                <label class="input-label">Credits Left</label>
                                 <input type="text" class="input-field" id="targetRemainingCredits" placeholder="42">
                             </div>
                         </div>
-                        <button class="btn btn-primary" style="width:100%;margin-top:var(--space-4);" onclick="calculateTarget()">Calculate Required GPA</button>
+                        <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="calculateTarget()">Calculate Required GPA</button>
                     </div>
 
                     <div id="targetResult"></div>
@@ -984,6 +1010,7 @@
             </div>
         </main>
 
+        <!-- Floating Navigation -->
         <nav class="nav-bar">
             <div class="nav-inner">
                 <button class="nav-item active" data-tab="gpa" onclick="switchTab('gpa')">
@@ -999,17 +1026,72 @@
         </nav>
     </div>
 
+    <!-- Modal -->
+    <div class="modal-overlay" id="addCourseModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeAddCourseModal()">×</button>
+            <h3 class="modal-title">Add Course</h3>
+            <div class="catalog-search">
+                <input type="text" class="input-field" id="catalogSearch" placeholder="Search catalog..." oninput="filterCatalog()">
+            </div>
+            <div class="catalog-list" id="catalogList"></div>
+            <div style="margin-top:16px;">
+                <label class="input-label">Or enter custom name</label>
+                <input type="text" class="input-field" id="customCourseName" placeholder="Course name">
+            </div>
+            <div style="margin-top:16px;">
+                <label class="input-label">Credits</label>
+                <div class="credit-options" id="creditOptions">
+                    <div class="credit-option selected" data-cr="1" onclick="selectCredit(1)">1</div>
+                    <div class="credit-option" data-cr="2" onclick="selectCredit(2)">2</div>
+                    <div class="credit-option" data-cr="3" onclick="selectCredit(3)">3</div>
+                    <div class="credit-option" data-cr="4" onclick="selectCredit(4)">4</div>
+                </div>
+            </div>
+            <div class="action-row" style="margin-top:20px;">
+                <button class="btn btn-secondary" onclick="closeAddCourseModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="addCourse()">Add</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // ===== CUSTOM CURSOR =====
+        const cursor = document.getElementById('cursor');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        if (window.matchMedia('(pointer: fine)').matches) {
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function updateCursor() {
+                cursorX += (mouseX - cursorX) * 0.15;
+                cursorY += (mouseY - cursorY) * 0.15;
+                cursor.style.left = cursorX - 6 + 'px';
+                cursor.style.top = cursorY - 6 + 'px';
+                requestAnimationFrame(updateCursor);
+            }
+            updateCursor();
+
+            document.querySelectorAll('button, a, .course-card, .catalog-item, .credit-option, .toggle-track').forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+            });
+        }
+
         // ===== DATA =====
         const SEMESTERS = [
-            { id: 'Y1S1', year: 1, num: 1, name: 'Year 1, Semester 1' },
-            { id: 'Y1S2', year: 1, num: 2, name: 'Year 1, Semester 2' },
-            { id: 'Y2S1', year: 2, num: 1, name: 'Year 2, Semester 1' },
-            { id: 'Y2S2', year: 2, num: 2, name: 'Year 2, Semester 2' },
-            { id: 'Y3S1', year: 3, num: 1, name: 'Year 3, Semester 1' },
-            { id: 'Y3S2', year: 3, num: 2, name: 'Year 3, Semester 2' },
-            { id: 'Y4S1', year: 4, num: 1, name: 'Year 4, Semester 1' },
-            { id: 'Y4S2', year: 4, num: 2, name: 'Year 4, Semester 2' },
+            { id: 'Y1S1', year: 1, num: 1, name: 'Year 1 — Semester 1' },
+            { id: 'Y1S2', year: 1, num: 2, name: 'Year 1 — Semester 2' },
+            { id: 'Y2S1', year: 2, num: 1, name: 'Year 2 — Semester 1' },
+            { id: 'Y2S2', year: 2, num: 2, name: 'Year 2 — Semester 2' },
+            { id: 'Y3S1', year: 3, num: 1, name: 'Year 3 — Semester 1' },
+            { id: 'Y3S2', year: 3, num: 2, name: 'Year 3 — Semester 2' },
+            { id: 'Y4S1', year: 4, num: 1, name: 'Year 4 — Semester 1' },
+            { id: 'Y4S2', year: 4, num: 2, name: 'Year 4 — Semester 2' },
         ];
 
         const CATALOG = [
@@ -1188,28 +1270,25 @@
             return { cgpa, majorCgpa: allMajorCr > 0 ? round2(allMajorGP / allMajorCr) : 0, totalCredits, standing, semData };
         }
 
-        function renderAll() { renderGpaTab(); renderCgpaTab(); renderHeaderSummary(); }
+        function renderAll() {
+            renderHero();
+            renderGpaTab();
+            renderCgpaTab();
+        }
 
-        function renderHeaderSummary() {
+        function renderHero() {
             const result = calcCGPA();
             const semDetail = calcSemesterGpa(state.selectedSemester);
 
-            // Update GPA number in header
-            const gpaEl = document.getElementById('gpaValue');
+            const gpaEl = document.getElementById('heroGpa');
             const gpaStr = state.activeTab === 'gpa' ? semDetail.gpa.toFixed(2) : result.cgpa.toFixed(2);
-            const [whole, dec] = gpaStr.split('.');
-            gpaEl.innerHTML = `${whole}<span class="decimal">.${dec}</span>`;
+            gpaEl.textContent = gpaStr;
 
-            // Major GPA
-            const majorEl = document.getElementById('majorGpaDisplay');
+            document.getElementById('heroCredits').textContent = state.activeTab === 'gpa' ? semDetail.earnedCredits : result.totalCredits;
+            document.getElementById('heroStanding').textContent = result.standing;
+
             const majorGpa = state.activeTab === 'gpa' ? semDetail.majorGpa : result.majorCgpa;
-            majorEl.textContent = majorGpa > 0 ? `Major: ${majorGpa.toFixed(2)}` : '';
-
-            // Standing badge
-            const standingContainer = document.getElementById('standingContainer');
-            const standing = result.standing;
-            const standingClass = result.cgpa >= 3.8 ? 'president' : result.cgpa >= 3.5 ? 'dean' : result.cgpa >= 2.0 ? 'good' : result.cgpa > 0 ? 'probation' : 'good';
-            standingContainer.innerHTML = `<span class="standing-tag ${standingClass}">${standing}</span>`;
+            document.getElementById('heroMajor').textContent = majorGpa > 0 ? majorGpa.toFixed(2) : '—';
         }
 
         function renderGpaTab() {
@@ -1217,12 +1296,12 @@
             document.getElementById('gpaProgress').style.width = Math.min(detail.gpa / 4 * 100, 100) + '%';
 
             const pill = document.getElementById('creditPill');
-            pill.textContent = `${detail.totalCredits} / 21 CR`;
-            pill.className = detail.totalCredits > 21 ? 'credit-pill warning' : 'credit-pill';
+            pill.textContent = `${detail.totalCredits} / 21`;
+            pill.className = detail.totalCredits > 21 ? 'credit-badge warning' : 'credit-badge';
 
             const detailsEl = document.getElementById('calcDetailsContent');
             if (detail.validCourses.length === 0) {
-                detailsEl.innerHTML = '<p style="color:var(--fg-tertiary);font-style:italic;">No courses with valid marks to show.</p>';
+                detailsEl.innerHTML = '<p style="color:var(--fg-muted);font-size:14px;">No courses with valid marks to show.</p>';
             } else {
                 let html = ''; let totalGP = 0;
                 detail.validCourses.forEach(c => {
@@ -1247,17 +1326,17 @@
             const [, gp] = c.mark != null ? convertMarkToGrade(c.mark) : ['', 0];
             const gradeClass = c.letterGrade ?
                 (c.letterGrade.startsWith('A') ? 'grade-A' : c.letterGrade.startsWith('B') ? 'grade-B' : c.letterGrade.startsWith('C') ? 'grade-C' : c.letterGrade.startsWith('D') ? 'grade-D' : 'grade-F') : '';
-            return `<div class="course-item ${!c.isIncluded ? 'excluded' : ''} ${c.isRetaken ? 'retaken' : ''}">
+            return `<div class="course-card ${!c.isIncluded ? 'excluded' : ''} ${c.isRetaken ? 'retaken' : ''}">
                 <div class="course-top">
                     <div class="course-info">
                         <input type="checkbox" class="course-checkbox" ${c.isIncluded ? 'checked' : ''} onchange="toggleInclusion('${c.id}')">
                         <div>
                             <div class="course-name">${c.name}</div>
-                            <div class="course-credits">${c.creditHours} credits</div>
+                            <div class="course-credits">${c.creditHours} Credits</div>
                         </div>
                     </div>
                     <div class="course-actions">
-                        ${c.letterGrade ? `<span class="grade-tag ${gradeClass}">${c.isRetaken ? 'RTK' : c.letterGrade}</span>` : ''}
+                        ${c.letterGrade ? `<span class="grade-badge ${gradeClass}">${c.isRetaken ? 'RTK' : c.letterGrade}</span>` : ''}
                         <button class="course-delete" onclick="deleteCourse('${c.id}')">×</button>
                     </div>
                 </div>
@@ -1276,7 +1355,6 @@
 
         function renderCgpaTab() {
             const result = calcCGPA();
-            document.getElementById('totalCreditsValue').textContent = result.totalCredits;
 
             const listEl = document.getElementById('semestersList');
             listEl.innerHTML = SEMESTERS.map(s => {
@@ -1355,19 +1433,19 @@
 
         function toggleSemester(semId, included) {
             state.semesters[semId].included = included;
-            saveState(); renderCgpaTab(); renderHeaderSummary();
+            saveState(); renderCgpaTab(); renderHero();
         }
 
         function updateSemManualGpa(semId, value) {
             const n = parseFloat(value);
             state.semesters[semId].manualGpa = (isNaN(n) || n < 0 || n > 4) ? null : n;
-            saveState(); renderCgpaTab(); renderHeaderSummary();
+            saveState(); renderCgpaTab(); renderHero();
         }
 
         function updateSemManualCredits(semId, value) {
             const n = parseInt(value);
             state.semesters[semId].manualCredits = (isNaN(n) || n <= 0) ? null : n;
-            saveState(); renderCgpaTab(); renderHeaderSummary();
+            saveState(); renderCgpaTab(); renderHero();
         }
 
         function resetAll() {
@@ -1384,11 +1462,11 @@
             const resultEl = document.getElementById('targetResult');
 
             if (currentCgpa <= 0 || targetCgpa <= 0 || remainingCredits <= 0) {
-                resultEl.innerHTML = '<div class="target-result unachievable" style="border-color:var(--warning);background:var(--warning-bg);"><div class="result-label" style="border-color:var(--warning);color:var(--warning)">Invalid Input</div><div class="result-detail">Please enter valid positive numbers for all fields.</div></div>';
+                resultEl.innerHTML = '<div class="target-result unachievable" style="border-color:var(--warning);"><div class="result-label" style="background:var(--warning-bg);color:var(--warning)">Invalid Input</div><div class="result-detail">Please enter valid positive numbers for all fields.</div></div>';
                 return;
             }
             if (currentCgpa > 4 || targetCgpa > 4) {
-                resultEl.innerHTML = '<div class="target-result unachievable"><div class="result-label">Invalid Range</div><div class="result-detail">CGPA must be between 0 and 4.</div></div>';
+                resultEl.innerHTML = '<div class="target-result unachievable"><div class="result-label" style="background:var(--danger-bg);color:var(--danger)">Invalid Range</div><div class="result-detail">CGPA must be between 0 and 4.</div></div>';
                 return;
             }
 
@@ -1397,28 +1475,23 @@
             const required = round2((targetTotal - currentTotal) / remainingCredits);
 
             if (required > 4) {
-                resultEl.innerHTML = `<div class="target-result unachievable"><div class="result-label">Goal Exceeds Limits</div><div class="result-value">${required.toFixed(2)}</div><div class="result-detail">Required GPA of <b>${required.toFixed(2)}</b> over ${remainingCredits} credits exceeds the 4.0 maximum.</div></div>`;
+                resultEl.innerHTML = `<div class="target-result unachievable"><div class="result-label" style="background:var(--danger-bg);color:var(--danger)">Goal Exceeds Limits</div><div class="result-value">${required.toFixed(2)}</div><div class="result-detail">Required GPA of <b>${required.toFixed(2)}</b> over ${remainingCredits} credits exceeds the 4.0 maximum.</div></div>`;
             } else {
-                resultEl.innerHTML = `<div class="target-result achievable"><div class="result-label">Achievable Goal</div><div class="result-value">${required.toFixed(2)}</div><div class="result-detail">You need <b>${required.toFixed(2)}</b> GPA over ${remainingCredits} remaining credits to reach target CGPA of ${targetCgpa.toFixed(2)}.</div></div>`;
+                resultEl.innerHTML = `<div class="target-result achievable"><div class="result-label" style="background:var(--success-bg);color:var(--success)">Achievable Goal</div><div class="result-value">${required.toFixed(2)}</div><div class="result-detail">You need <b>${required.toFixed(2)}</b> GPA over ${remainingCredits} remaining credits to reach target CGPA of ${targetCgpa.toFixed(2)}.</div></div>`;
             }
         }
 
-        // ===== ADD COURSE (inline, not modal) =====
-        function openAddCourse() {
-            document.getElementById('addCourseArea').style.display = 'block';
-            document.getElementById('mainActions').style.display = 'none';
+        // ===== MODAL =====
+        function openAddCourseModal() {
+            document.getElementById('addCourseModal').classList.add('active');
             document.getElementById('catalogSearch').value = '';
             document.getElementById('customCourseName').value = '';
             state.targetCredits = 3;
             selectCredit(3);
             filterCatalog();
-            document.getElementById('catalogSearch').focus();
         }
 
-        function closeAddCourse() {
-            document.getElementById('addCourseArea').style.display = 'none';
-            document.getElementById('mainActions').style.display = 'flex';
-        }
+        function closeAddCourseModal() { document.getElementById('addCourseModal').classList.remove('active'); }
 
         function filterCatalog() {
             const q = document.getElementById('catalogSearch').value.toLowerCase().trim();
@@ -1448,7 +1521,7 @@
             if (currentCredits + state.targetCredits > 21) { alert('Credit hour limit exceeded (max 21)'); return; }
             if (semCourses.some(c => c.name.toLowerCase() === name.toLowerCase())) { alert('Course already added!'); return; }
             semCourses.push({ id: genId(), semesterId: state.selectedSemester, name, creditHours: state.targetCredits, mark: null, letterGrade: null, gradePoint: null, isIncluded: true, isMajor: false, isRetaken: false });
-            saveState(); closeAddCourse(); renderAll();
+            saveState(); closeAddCourseModal(); renderAll();
         }
 
         function toggleAccordion(trigger) {
@@ -1479,7 +1552,10 @@
 
         function setupEventListeners() {
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAddCourse(); });
+            document.getElementById('addCourseModal').addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal-overlay')) closeAddCourseModal();
+            });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAddCourseModal(); });
         }
 
         init();
