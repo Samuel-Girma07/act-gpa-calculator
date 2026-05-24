@@ -1,0 +1,6 @@
+{
+  "name": "ACT GPA Calculator",
+  "description": "An Android GPA/CGPA tracker and target calculator designed for American College of Technology (ACT) Computer Science students, with pre-loaded official CS curriculum.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
