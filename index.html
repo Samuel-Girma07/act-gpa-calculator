@@ -1,908 +1,1085 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ACT GPA Calculator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
+        /* ============================================
+           DESIGN TOKENS - Three Layer Architecture
+           ============================================ */
+        
         :root {
-            --ink: #0C0E12;
-            --paper: #F4F1EC;
-            --chalk: #E8E2D9;
-            --slate: #7A756E;
-            --lead: #3D3B38;
-            --gold: #C8A415;
-            --gold-muted: #A68B2C;
-            --oxblood: #8B1A2D;
-            --forest: #1B4D3E;
-            --ink-lighter: #181A22;
-            --paper-darker: #E0D9CE;
-            --accent: #C8A415;
-            --accent-hover: #D4B82A;
-            --danger: #8B1A2D;
-            --success: #1B4D3E;
-            --warning: #9C6B1A;
-            --font-display: 'Playfair Display', Georgia, serif;
-            --font-mono: 'IBM Plex Mono', monospace;
-            --font-body: 'Crimson Pro', Georgia, serif;
+            /* PRIMITIVE TOKENS - Raw Values */
+            /* Colors (HSL for opacity control) */
+            --p-hue-primary: 220;
+          --p-hue-success: 142;
+          --p-hue-warning: 38;
+          --p-hue-danger: 0;
+          --p-hue-gold: 45;
+
+          --p-slate-50: hsl(220, 20%, 98%);
+          --p-slate-100: hsl(220, 18%, 96%);
+          --p-slate-200: hsl(220, 14%, 90%);
+          --p-slate-300: hsl(220, 12%, 80%);
+          --p-slate-400: hsl(220, 10%, 60%);
+          --p-slate-500: hsl(220, 9%, 46%);
+          --p-slate-600: hsl(220, 12%, 34%);
+          --p-slate-700: hsl(220, 16%, 24%);
+          --p-slate-800: hsl(220, 20%, 16%);
+          --p-slate-900: hsl(220, 24%, 10%);
+          --p-slate-950: hsl(220, 28%, 6%);
+
+          --p-gold-400: hsl(45, 90%, 55%);
+          --p-gold-500: hsl(45, 85%, 48%);
+          --p-gold-600: hsl(45, 80%, 40%);
+
+          --p-success-500: hsl(142, 60%, 40%);
+          --p-danger-500: hsl(0, 65%, 50%);
+          --p-warning-500: hsl(38, 85%, 50%);
+
+          /* Spacing (8px base grid) */
+          --p-space-0: 0;
+          --p-space-1: 4px;
+          --p-space-2: 8px;
+          --p-space-3: 12px;
+          --p-space-4: 16px;
+          --p-space-5: 20px;
+          --p-space-6: 24px;
+          --p-space-8: 32px;
+          --p-space-10: 40px;
+          --p-space-12: 48px;
+          --p-space-16: 64px;
+          --p-space-20: 80px;
+
+          /* Typography Scale */
+          --p-text-xs: 11px;
+          --p-text-sm: 13px;
+          --p-text-base: 15px;
+          --p-text-lg: 17px;
+          --p-text-xl: 20px;
+          --p-text-2xl: 24px;
+          --p-text-3xl: 32px;
+          --p-text-4xl: 40px;
+          --p-text-5xl: 52px;
+
+          /* Font Families */
+          --p-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+          --p-font-serif: 'Crimson Pro', Georgia, serif;
+          --p-font-mono: 'DM Mono', monospace;
+
+          /* Border Radius */
+          --p-radius-sm: 6px;
+          --p-radius-md: 10px;
+          --p-radius-lg: 14px;
+          --p-radius-xl: 20px;
+          --p-radius-full: 9999px;
+
+          /* Shadows */
+          --p-shadow-sm: 0 1px 2px hsla(220, 24%, 10%, 0.05);
+          --p-shadow-md: 0 4px 12px hsla(220, 24%, 10%, 0.08);
+          --p-shadow-lg: 0 12px 40px hsla(220, 24%, 10%, 0.12);
+          --p-shadow-gold: 0 4px 20px hsla(45, 85%, 48%, 0.2);
+
+          /* Transitions */
+          --p-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+          --p-transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+          --p-transition-slow: 400ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* SEMANTIC TOKENS - Purpose Aliases */
+        [data-theme="dark"] {
+          --s-bg-primary: var(--p-slate-950);
+          --s-bg-secondary: var(--p-slate-900);
+          --s-bg-tertiary: var(--p-slate-800);
+          --s-bg-elevated: var(--p-slate-850, hsl(220, 22%, 12%));
+          --s-bg-input: var(--p-slate-900);
+
+          --s-fg-primary: var(--p-slate-50);
+          --s-fg-secondary: var(--p-slate-300);
+          --s-fg-tertiary: var(--p-slate-500);
+          --s-fg-muted: var(--p-slate-600);
+
+          --s-border-default: hsla(220, 14%, 90%, 0.08);
+          --s-border-hover: hsla(220, 14%, 90%, 0.15);
+          --s-border-focus: var(--p-gold-500);
+
+          --s-accent-primary: var(--p-gold-500);
+          --s-accent-primary-hover: var(--p-gold-400);
+          --s-accent-primary-active: var(--p-gold-600);
+          --s-accent-primary-subtle: hsla(45, 85%, 48%, 0.1);
+
+          --s-status-success: var(--p-success-500);
+          --s-status-success-bg: hsla(142, 60%, 40%, 0.1);
+          --s-status-danger: var(--p-danger-500);
+          --s-status-danger-bg: hsla(0, 65%, 50%, 0.1);
+          --s-status-warning: var(--p-warning-500);
+          --s-status-warning-bg: hsla(38, 85%, 50%, 0.1);
+
+          --s-shadow-card: var(--p-shadow-md);
         }
 
         [data-theme="light"] {
-            --ink: #F4F1EC;
-            --paper: #0C0E12;
-            --chalk: #181A22;
-            --slate: #8A857E;
-            --lead: #B5B0A8;
-            --ink-lighter: #E0D9CE;
-            --paper-darker: #1A1C24;
+          --s-bg-primary: var(--p-slate-50);
+          --s-bg-secondary: var(--p-slate-100);
+          --s-bg-tertiary: var(--p-slate-200);
+          --s-bg-elevated: var(--p-slate-100);
+          --s-bg-input: var(--p-slate-100);
+
+          --s-fg-primary: var(--p-slate-900);
+          --s-fg-secondary: var(--p-slate-600);
+          --s-fg-tertiary: var(--p-slate-400);
+          --s-fg-muted: var(--p-slate-300);
+
+          --s-border-default: hsla(220, 16%, 24%, 0.08);
+          --s-border-hover: hsla(220, 16%, 24%, 0.15);
+          --s-border-focus: var(--p-gold-600);
+
+          --s-accent-primary: var(--p-gold-600);
+          --s-accent-primary-hover: var(--p-gold-500);
+          --s-accent-primary-active: var(--p-gold-700, hsl(45, 85%, 35%));
+          --s-accent-primary-subtle: hsla(45, 85%, 48%, 0.1);
+
+          --s-status-success: hsl(142, 60%, 35%);
+          --s-status-success-bg: hsla(142, 60%, 40%, 0.08);
+          --s-status-danger: hsl(0, 60%, 45%);
+          --s-status-danger-bg: hsla(0, 65%, 50%, 0.08);
+          --s-status-warning: hsl(38, 80%, 45%);
+          --s-status-warning-bg: hsla(38, 85%, 50%, 0.08);
+
+          --s-shadow-card: var(--p-shadow-md);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { -webkit-tap-highlight-color: transparent; }
+        /* COMPONENT TOKENS - Component Specific */
+        :root {
+          /* Button Primary */
+          --c-btn-primary-bg: var(--s-accent-primary);
+          --c-btn-primary-fg: var(--p-slate-950);
+          --c-btn-primary-bg-hover: var(--s-accent-primary-hover);
+          --c-btn-primary-bg-active: var(--s-accent-primary-active);
+          --c-btn-primary-shadow: var(--p-shadow-gold);
 
+          /* Button Secondary */
+          --c-btn-secondary-bg: transparent;
+          --c-btn-secondary-fg: var(--s-accent-primary);
+          --c-btn-secondary-border: var(--s-accent-primary);
+          --c-btn-secondary-bg-hover: var(--s-accent-primary-subtle);
+
+          /* Card */
+          --c-card-bg: var(--s-bg-secondary);
+          --c-card-border: var(--s-border-default);
+          --c-card-border-hover: var(--s-border-hover);
+          --c-card-shadow: var(--s-shadow-card);
+
+          /* Input */
+          --c-input-bg: var(--s-bg-input);
+          --c-input-border: var(--s-border-default);
+          --c-input-border-focus: var(--s-border-focus);
+          --c-input-fg: var(--s-fg-primary);
+          --c-input-placeholder: var(--s-fg-muted);
+
+          /* Badge President */
+          --c-badge-president-border: var(--p-gold-500);
+          --c-badge-president-fg: var(--p-gold-400);
+          --c-badge-president-bg: hsla(45, 85%, 48%, 0.08);
+        }
+
+        /* ============================================
+           RESET & BASE
+           ============================================ */
+        *, *::before, *::after { 
+          margin: 0; padding: 0; box-sizing: border-box; 
+        }
+        html { 
+          -webkit-tap-highlight-color: transparent; 
+          scroll-behavior: smooth;
+        }
         body {
-            font-family: var(--font-body);
-            background: var(--ink);
-            color: var(--paper);
-            min-height: 100vh;
-            font-size: 16px;
-            line-height: 1.6;
-            overflow-x: hidden;
-            transition: background 0.4s ease, color 0.4s ease;
+          font-family: var(--p-font-sans);
+          background: var(--s-bg-primary);
+          color: var(--s-fg-primary);
+          font-size: var(--p-text-base);
+          line-height: 1.6;
+          min-height: 100vh;
+          overflow-x: hidden;
+          transition: background var(--p-transition-base), color var(--p-transition-base);
         }
 
-        /* ===== NOISE TEXTURE OVERLAY ===== */
-        body::before {
-            content: '';
-            position: fixed; inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-            background-repeat: repeat;
-            background-size: 256px 256px;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: overlay;
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--s-fg-muted); border-radius: var(--p-radius-full); }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeScale {
+          from { opacity: 0; transform: scale(0.96); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideRight {
+          from { opacity: 0; transform: translateX(-10px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
         }
 
-        /* ===== KEYFRAMES ===== */
-        @keyframes revealUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes revealScale {
-            from { opacity: 0; transform: scale(0.92); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes drawLine {
-            from { transform: scaleX(0); }
-            to { transform: scaleX(1); }
-        }
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(200,164,21,0.15); }
-            50% { box-shadow: 0 0 20px 4px rgba(200,164,21,0.08); }
-        }
-        @keyframes countUp {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        .anim-fade-up { animation: fadeUp 0.5s var(--p-transition-slow) forwards; opacity: 0; }
+        .anim-d1 { animation-delay: 0.05s; }
+        .anim-d2 { animation-delay: 0.1s; }
+        .anim-d3 { animation-delay: 0.15s; }
+        .anim-d4 { animation-delay: 0.2s; }
+        .anim-d5 { animation-delay: 0.25s; }
+
+        /* ============================================
+           LAYOUT
+           ============================================ */
+        .app { min-height: 100vh; display: flex; flex-direction: column; }
+        .container {
+          max-width: 680px; margin: 0 auto;
+          padding: 0 var(--p-space-5);
+          width: 100%;
         }
 
-        .reveal { animation: revealUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        .reveal-d1 { animation-delay: 0.05s; }
-        .reveal-d2 { animation-delay: 0.1s; }
-        .reveal-d3 { animation-delay: 0.15s; }
-        .reveal-d4 { animation-delay: 0.2s; }
-        .reveal-d5 { animation-delay: 0.25s; }
-
-        /* ===== APP SHELL ===== */
-        .app { min-height: 100vh; display: flex; flex-direction: column; position: relative; }
-
-        /* ===== DECORATIVE BACKGROUND ELEMENTS ===== */
-        .deco-grid {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background-image:
-                linear-gradient(rgba(200,164,21,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(200,164,21,0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .deco-cross {
-            position: fixed; top: 80px; right: 40px;
-            width: 120px; height: 120px;
-            opacity: 0.06;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .deco-cross::before, .deco-cross::after {
-            content: ''; position: absolute; background: var(--gold);
-        }
-        .deco-cross::before { width: 2px; height: 100%; left: 50%; transform: translateX(-50%); }
-        .deco-cross::after { width: 100%; height: 2px; top: 50%; transform: translateY(-50%); }
-
-        /* ===== HEADER ===== */
+        /* ============================================
+           HEADER
+           ============================================ */
         .header {
-            position: sticky; top: 0; z-index: 100;
-            background: var(--ink);
-            border-bottom: 1px solid rgba(200,164,21,0.15);
-            backdrop-filter: blur(20px);
+          position: sticky; top: 0; z-index: 100;
+          background: hsla(var(--p-hue-primary), 28%, 6%, 0.85);
+          backdrop-filter: blur(16px) saturate(1.2);
+          border-bottom: 1px solid var(--s-border-default);
+        }
+        [data-theme="light"] .header {
+          background: hsla(220, 20%, 98%, 0.85);
         }
         .header-inner {
-            max-width: 720px; margin: 0 auto;
-            padding: 20px 24px;
-            display: flex; align-items: center; justify-content: space-between;
+          display: flex; align-items: center; justify-content: space-between;
+          padding: var(--p-space-4) 0;
         }
-        .header-brand {
-            display: flex; align-items: center; gap: 14px;
+        .brand {
+          display: flex; align-items: center; gap: var(--p-space-3);
         }
-        .header-seal {
-            width: 44px; height: 44px;
-            border: 2px solid var(--gold);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-family: var(--font-display);
-            font-size: 18px; font-weight: 700;
-            color: var(--gold);
-            flex-shrink: 0;
-            position: relative;
+        .brand-icon {
+          width: 40px; height: 40px;
+          border-radius: var(--p-radius-md);
+          background: var(--s-accent-primary);
+          display: flex; align-items: center; justify-content: center;
+          font-family: var(--p-font-serif);
+          font-size: 20px; font-weight: 700;
+          color: var(--p-slate-950);
         }
-        .header-seal::after {
-            content: ''; position: absolute; inset: -4px;
-            border: 1px solid rgba(200,164,21,0.2);
-            border-radius: 50%;
+        .brand-text h1 {
+          font-family: var(--p-font-sans);
+          font-size: var(--p-text-lg); font-weight: 700;
+          color: var(--s-fg-primary);
+          line-height: 1.2;
+          letter-spacing: -0.02em;
         }
-        .header-title h1 {
-            font-family: var(--font-display);
-            font-size: 22px; font-weight: 700;
-            color: var(--paper);
-            line-height: 1.1;
-            letter-spacing: -0.02em;
-        }
-        .header-title span {
-            font-family: var(--font-mono);
-            font-size: 9px; font-weight: 600;
-            color: var(--gold-muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-        .header-line {
-            width: 40px; height: 1px;
-            background: var(--gold);
-            margin: 4px 0;
-            transform-origin: left;
-            animation: drawLine 1s ease 0.3s forwards;
-            transform: scaleX(0);
+        .brand-text span {
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); font-weight: 500;
+          color: var(--s-fg-tertiary);
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
         }
         .theme-toggle {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            border: 1px solid rgba(200,164,21,0.2);
-            background: transparent;
-            color: var(--gold);
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
-            transition: all 0.3s ease;
+          width: 40px; height: 40px;
+          border-radius: var(--p-radius-md);
+          border: 1px solid var(--s-border-default);
+          background: var(--s-bg-secondary);
+          color: var(--s-fg-secondary);
+          cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 18px;
+          transition: all var(--p-transition-fast);
         }
         .theme-toggle:hover {
-            background: rgba(200,164,21,0.1);
-            transform: rotate(15deg);
+          border-color: var(--s-accent-primary);
+          color: var(--s-accent-primary);
+          transform: rotate(12deg);
         }
 
-        /* ===== MAIN ===== */
+        /* ============================================
+           MAIN CONTENT
+           ============================================ */
         .main {
-            flex: 1; padding: 24px 20px 110px;
-            max-width: 720px; margin: 0 auto; width: 100%;
-            position: relative; z-index: 1;
+          flex: 1; padding: var(--p-space-6) 0 calc(var(--p-space-20) + 60px);
         }
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: revealUp 0.4s ease; }
+        .tab-content.active { display: block; animation: fadeUp 0.35s ease; }
 
-        /* ===== SECTION HEADER ===== */
+        /* ============================================
+           SECTION HEADER
+           ============================================ */
         .section-header {
-            margin-bottom: 28px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(200,164,21,0.1);
+          margin-bottom: var(--p-space-6);
         }
         .section-header h2 {
-            font-family: var(--font-display);
-            font-size: 32px; font-weight: 700;
-            color: var(--paper);
-            line-height: 1.1;
-            margin-bottom: 6px;
+          font-family: var(--p-font-serif);
+          font-size: var(--p-text-3xl); font-weight: 600;
+          color: var(--s-fg-primary);
+          line-height: 1.15;
+          margin-bottom: var(--p-space-2);
         }
         .section-header p {
-            font-family: var(--font-body);
-            font-size: 15px;
-            color: var(--slate);
-            font-style: italic;
+          font-size: var(--p-text-base);
+          color: var(--s-fg-secondary);
+          font-style: italic;
+          font-family: var(--p-font-serif);
         }
 
-        /* ===== GPA HERO CARD ===== */
-        .gpa-hero {
-            background: var(--ink-lighter);
-            border: 1px solid rgba(200,164,21,0.12);
-            border-radius: 2px;
-            padding: 32px 28px;
-            margin-bottom: 24px;
-            position: relative;
-            overflow: hidden;
+        /* ============================================
+           GPA DISPLAY CARD
+           ============================================ */
+        .gpa-display {
+          background: var(--c-card-bg);
+          border: 1px solid var(--c-card-border);
+          border-radius: var(--p-radius-lg);
+          padding: var(--p-space-6);
+          margin-bottom: var(--p-space-5);
+          box-shadow: var(--c-card-shadow);
+          transition: border-color var(--p-transition-fast), box-shadow var(--p-transition-fast);
+          position: relative;
+          overflow: hidden;
         }
-        .gpa-hero::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: var(--gold);
+        .gpa-display::before {
+          content: '';
+          position: absolute; top: 0; left: 0; right: 0; height: 3px;
+          background: var(--s-accent-primary);
         }
-        .gpa-hero-inner {
-            display: flex; justify-content: space-between; align-items: flex-end;
-            position: relative; z-index: 1;
+        .gpa-display:hover {
+          border-color: var(--c-card-border-hover);
         }
-        .gpa-hero-left .label {
-            font-family: var(--font-mono);
-            font-size: 10px; font-weight: 600;
-            color: var(--gold-muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
+        .gpa-display-inner {
+          display: flex; justify-content: space-between; align-items: flex-end;
+          position: relative; z-index: 1;
         }
-        .gpa-hero-left .value {
-            font-family: var(--font-display);
-            font-size: 64px; font-weight: 900;
-            color: var(--paper);
-            line-height: 1;
-            letter-spacing: -0.04em;
-            text-shadow: 0 0 40px rgba(200,164,21,0.1);
+        .gpa-main .label {
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); font-weight: 500;
+          color: var(--s-fg-tertiary);
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          margin-bottom: var(--p-space-2);
         }
-        .gpa-hero-left .major-gpa {
-            font-family: var(--font-mono);
-            font-size: 13px; font-weight: 600;
-            color: var(--gold);
-            margin-top: 8px;
+        .gpa-main .value {
+          font-family: var(--p-font-serif);
+          font-size: var(--p-text-5xl); font-weight: 700;
+          color: var(--s-fg-primary);
+          line-height: 1;
+          letter-spacing: -0.04em;
         }
-        .gpa-hero-right {
-            text-align: right;
+        .gpa-main .major-gpa {
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-sm); font-weight: 500;
+          color: var(--s-accent-primary);
+          margin-top: var(--p-space-2);
         }
-        .gpa-hero-right .label {
-            font-family: var(--font-mono);
-            font-size: 10px; font-weight: 600;
-            color: var(--slate);
-            letter-spacing: 2px;
-            text-transform: uppercase;
+        .gpa-sub {
+          text-align: right;
         }
-        .gpa-hero-right .value {
-            font-family: var(--font-mono);
-            font-size: 28px; font-weight: 700;
-            color: var(--paper);
+        .gpa-sub .label {
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); font-weight: 500;
+          color: var(--s-fg-tertiary);
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+        }
+        .gpa-sub .value {
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-2xl); font-weight: 700;
+          color: var(--s-fg-primary);
+        }
+        .gpa-progress {
+          margin-top: var(--p-space-6);
         }
         .gpa-progress-track {
-            height: 4px;
-            background: rgba(200,164,21,0.08);
-            margin-top: 24px;
-            position: relative;
+          height: 6px;
+          background: var(--s-bg-tertiary);
+          border-radius: var(--p-radius-full);
+          overflow: hidden;
+          position: relative;
         }
         .gpa-progress-fill {
-            height: 100%;
-            background: var(--gold);
-            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
+          height: 100%;
+          background: var(--s-accent-primary);
+          border-radius: var(--p-radius-full);
+          transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+          position: relative;
         }
         .gpa-progress-fill::after {
-            content: '';
-            position: absolute; right: 0; top: -3px;
-            width: 10px; height: 10px;
-            background: var(--gold);
-            border-radius: 50%;
-            box-shadow: 0 0 12px rgba(200,164,21,0.4);
+          content: '';
+          position: absolute; right: -1px; top: -2px;
+          width: 10px; height: 10px;
+          background: var(--s-accent-primary);
+          border-radius: 50%;
+          box-shadow: 0 0 12px var(--s-accent-primary);
         }
         .gpa-progress-labels {
-            display: flex; justify-content: space-between;
-            margin-top: 8px;
-            font-family: var(--font-mono);
-            font-size: 10px; color: var(--slate);
-            letter-spacing: 1px;
+          display: flex; justify-content: space-between;
+          margin-top: var(--p-space-2);
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); color: var(--s-fg-muted);
         }
 
-        /* ===== STANDING BADGE ===== */
+        /* ============================================
+           STANDING BADGE
+           ============================================ */
         .standing-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 6px 16px;
-            border: 1px solid;
-            font-family: var(--font-mono);
-            font-size: 11px; font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-top: 12px;
+          display: inline-flex; align-items: center; gap: var(--p-space-2);
+          padding: var(--p-space-1) var(--p-space-3);
+          border: 1px solid;
+          border-radius: var(--p-radius-sm);
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          margin-top: var(--p-space-3);
         }
         .standing-president {
-            border-color: var(--gold);
-            color: var(--gold);
-            background: rgba(200,164,21,0.05);
+          border-color: var(--p-gold-500);
+          color: var(--p-gold-400);
+          background: var(--c-badge-president-bg);
         }
         .standing-dean {
-            border-color: var(--forest);
-            color: #4CAF50;
-            background: rgba(27,77,62,0.1);
+          border-color: var(--s-status-success);
+          color: var(--s-status-success);
+          background: var(--s-status-success-bg);
         }
         .standing-good {
-            border-color: var(--slate);
-            color: var(--slate);
-            background: rgba(122,117,110,0.05);
+          border-color: var(--s-fg-muted);
+          color: var(--s-fg-tertiary);
+          background: var(--s-bg-tertiary);
         }
         .standing-probation {
-            border-color: var(--oxblood);
-            color: var(--oxblood);
-            background: rgba(139,26,45,0.05);
+          border-color: var(--s-status-danger);
+          color: var(--s-status-danger);
+          background: var(--s-status-danger-bg);
         }
 
-        /* ===== SELECTOR ===== */
+        /* ============================================
+           SELECTOR
+           ============================================ */
         .selector-row {
-            display: flex; align-items: center; gap: 14px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+          display: flex; align-items: center; gap: var(--p-space-3);
+          margin-bottom: var(--p-space-5);
+          flex-wrap: wrap;
         }
         .select-wrapper {
-            position: relative;
-            flex: 1; min-width: 200px;
+          position: relative; flex: 1; min-width: 220px;
         }
         .select-wrapper select {
-            appearance: none;
-            width: 100%;
-            background: var(--ink-lighter);
-            border: 1px solid rgba(200,164,21,0.15);
-            border-radius: 2px;
-            padding: 12px 40px 12px 16px;
-            font-family: var(--font-mono);
-            font-size: 13px; font-weight: 600;
-            color: var(--paper);
-            cursor: pointer;
-            transition: all 0.2s ease;
+          appearance: none; width: 100%;
+          background: var(--c-input-bg);
+          border: 1px solid var(--c-input-border);
+          border-radius: var(--p-radius-md);
+          padding: var(--p-space-3) var(--p-space-10) var(--p-space-3) var(--p-space-4);
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-sm); font-weight: 600;
+          color: var(--c-input-fg);
+          cursor: pointer;
+          transition: all var(--p-transition-fast);
         }
         .select-wrapper select:hover, .select-wrapper select:focus {
-            border-color: var(--gold);
-            outline: none;
+          border-color: var(--s-accent-primary);
+          outline: none;
         }
         .select-wrapper::after {
-            content: "↓";
-            position: absolute; right: 14px; top: 50%;
-            transform: translateY(-50%);
-            font-family: var(--font-mono);
-            font-size: 12px; color: var(--gold);
-            pointer-events: none;
+          content: "↓";
+          position: absolute; right: var(--p-space-4); top: 50%;
+          transform: translateY(-50%);
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-sm); color: var(--s-accent-primary);
+          pointer-events: none;
         }
         .credit-pill {
-            padding: 8px 16px;
-            border: 1px solid rgba(200,164,21,0.15);
-            font-family: var(--font-mono);
-            font-size: 12px; font-weight: 600;
-            color: var(--gold);
-            white-space: nowrap;
+          padding: var(--p-space-2) var(--p-space-4);
+          border: 1px solid var(--s-border-default);
+          border-radius: var(--p-radius-md);
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); font-weight: 600;
+          color: var(--s-accent-primary);
+          white-space: nowrap;
+          background: var(--s-accent-primary-subtle);
+        }
+        .credit-pill.warning {
+          color: var(--s-status-danger);
+          border-color: var(--s-status-danger);
+          background: var(--s-status-danger-bg);
         }
 
-        /* ===== COURSE CARDS ===== */
-        .course-list { display: flex; flex-direction: column; gap: 1px; }
+        /* ============================================
+           COURSE CARDS
+           ============================================ */
+        .course-list { display: flex; flex-direction: column; gap: 2px; }
         .course-item {
-            background: var(--ink-lighter);
-            border-left: 3px solid transparent;
-            padding: 18px 20px;
-            transition: all 0.25s ease;
-            position: relative;
+          background: var(--c-card-bg);
+          border: 1px solid var(--c-card-border);
+          border-left: 3px solid transparent;
+          border-radius: var(--p-radius-md);
+          padding: var(--p-space-4) var(--p-space-5);
+          transition: all var(--p-transition-fast);
+          position: relative;
         }
         .course-item:hover {
-            border-left-color: var(--gold);
-            background: rgba(200,164,21,0.03);
+          border-left-color: var(--s-accent-primary);
+          border-color: var(--c-card-border-hover);
+          box-shadow: var(--c-card-shadow);
         }
         .course-item.excluded { opacity: 0.35; }
         .course-item.retaken { opacity: 0.45; }
-        .course-item.retaken .course-name { text-decoration: line-through; text-decoration-color: var(--oxblood); }
+        .course-item.retaken .course-name { text-decoration: line-through; text-decoration-color: var(--s-status-danger); }
 
         .course-top {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            margin-bottom: 14px;
+          display: flex; justify-content: space-between; align-items: flex-start;
+          margin-bottom: var(--p-space-3);
         }
         .course-info {
-            display: flex; align-items: flex-start; gap: 12px;
-            flex: 1;
+          display: flex; align-items: flex-start; gap: var(--p-space-3);
+          flex: 1;
         }
         .course-checkbox {
-            width: 18px; height: 18px;
-            accent-color: var(--gold);
-            margin-top: 2px; flex-shrink: 0;
-            cursor: pointer;
+          width: 18px; height: 18px;
+          accent-color: var(--s-accent-primary);
+          margin-top: 2px; flex-shrink: 0;
+          cursor: pointer;
         }
         .course-name {
-            font-family: var(--font-display);
-            font-size: 17px; font-weight: 600;
-            color: var(--paper);
-            line-height: 1.3;
+          font-family: var(--p-font-serif);
+          font-size: var(--p-text-lg); font-weight: 600;
+          color: var(--s-fg-primary);
+          line-height: 1.3;
         }
         .course-credits {
-            font-family: var(--font-mono);
-            font-size: 10px; color: var(--slate);
-            margin-top: 3px; letter-spacing: 1px;
-            text-transform: uppercase;
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); color: var(--s-fg-tertiary);
+          margin-top: var(--p-space-1); letter-spacing: 0.05em;
+          text-transform: uppercase;
         }
         .course-actions {
-            display: flex; align-items: center; gap: 10px;
-            flex-shrink: 0;
+          display: flex; align-items: center; gap: var(--p-space-2);
+          flex-shrink: 0;
         }
         .grade-pill {
-            padding: 3px 10px;
-            border: 1px solid;
-            font-family: var(--font-mono);
-            font-size: 11px; font-weight: 700;
-            letter-spacing: 0.5px;
+          padding: 2px var(--p-space-3);
+          border: 1px solid;
+          border-radius: var(--p-radius-sm);
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); font-weight: 700;
+          letter-spacing: 0.03em;
         }
-        .grade-A { border-color: var(--forest); color: #4CAF50; }
-        .grade-B { border-color: var(--gold-muted); color: var(--gold); }
-        .grade-C { border-color: var(--warning); color: #D4A017; }
-        .grade-D { border-color: var(--oxblood); color: #C45B6A; }
-        .grade-F { border-color: var(--oxblood); color: var(--oxblood); }
+        .grade-A { border-color: var(--s-status-success); color: var(--s-status-success); }
+        .grade-B { border-color: var(--p-gold-500); color: var(--p-gold-400); }
+        .grade-C { border-color: var(--s-status-warning); color: var(--s-status-warning); }
+        .grade-D { border-color: var(--s-status-danger); color: #C45B6A; }
+        .grade-F { border-color: var(--s-status-danger); color: var(--s-status-danger); }
         .course-delete {
-            width: 28px; height: 28px;
-            border: none; background: transparent;
-            color: var(--oxblood);
-            cursor: pointer; font-size: 16px;
-            opacity: 0;
-            transition: all 0.2s ease;
+          width: 28px; height: 28px;
+          border: none; background: transparent;
+          color: var(--s-status-danger);
+          cursor: pointer; font-size: 18px;
+          display: flex; align-items: center; justify-content: center;
+          opacity: 0;
+          transition: all var(--p-transition-fast);
+          border-radius: var(--p-radius-sm);
         }
         .course-item:hover .course-delete { opacity: 1; }
-        .course-delete:hover { transform: scale(1.1); }
+        .course-delete:hover { background: var(--s-status-danger-bg); }
 
         .course-inputs {
-            display: grid; grid-template-columns: 1fr 100px;
-            gap: 10px;
-            margin-bottom: 12px;
+          display: grid; grid-template-columns: 1fr 100px;
+          gap: var(--p-space-2);
+          margin-bottom: var(--p-space-3);
         }
         .course-input {
-            width: 100%;
-            padding: 10px 14px;
-            background: var(--ink);
-            border: 1px solid rgba(200,164,21,0.1);
-            color: var(--paper);
-            font-family: var(--font-mono);
-            font-size: 14px;
-            transition: all 0.2s ease;
+          width: 100%;
+          padding: var(--p-space-2) var(--p-space-3);
+          background: var(--s-bg-primary);
+          border: 1px solid var(--c-input-border);
+          border-radius: var(--p-radius-sm);
+          color: var(--c-input-fg);
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-sm);
+          transition: all var(--p-transition-fast);
         }
         .course-input:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 2px rgba(200,164,21,0.08);
+          outline: none;
+          border-color: var(--s-accent-primary);
+          box-shadow: 0 0 0 3px hsla(45, 85%, 48%, 0.06);
         }
-        .course-input::placeholder { color: var(--lead); }
+        .course-input::placeholder { color: var(--c-input-placeholder); }
         .course-flags {
-            display: flex; gap: 20px; flex-wrap: wrap;
+          display: flex; gap: var(--p-space-5); flex-wrap: wrap;
         }
         .flag {
-            display: flex; align-items: center; gap: 6px;
-            font-family: var(--font-body);
-            font-size: 13px; color: var(--slate);
-            cursor: pointer;
-            transition: color 0.2s ease;
+          display: flex; align-items: center; gap: var(--p-space-1);
+          font-size: var(--p-text-sm); color: var(--s-fg-secondary);
+          cursor: pointer;
+          transition: color var(--p-transition-fast);
         }
-        .flag:hover { color: var(--paper); }
-        .flag input {
-            accent-color: var(--gold);
-            cursor: pointer;
-        }
-        .flag.retake input { accent-color: var(--oxblood); }
+        .flag:hover { color: var(--s-fg-primary); }
+        .flag input { accent-color: var(--s-accent-primary); cursor: pointer; }
+        .flag.retake input { accent-color: var(--s-status-danger); }
 
-        /* ===== BUTTONS ===== */
+        /* ============================================
+           BUTTONS
+           ============================================ */
         .btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: 8px; padding: 12px 24px;
-            font-family: var(--font-mono);
-            font-size: 12px; font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            border: none;
-            position: relative;
-            overflow: hidden;
+          display: inline-flex; align-items: center; justify-content: center;
+          gap: var(--p-space-2); padding: var(--p-space-3) var(--p-space-5);
+          border-radius: var(--p-radius-md);
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); font-weight: 600;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: all var(--p-transition-fast);
+          border: none;
+          position: relative;
+          overflow: hidden;
         }
-        .btn::before {
-            content: '';
-            position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: rgba(255,255,255,0.05);
-            transition: left 0.3s ease;
-        }
-        .btn:hover::before { left: 0; }
         .btn-primary {
-            background: var(--gold);
-            color: var(--ink);
+          background: var(--c-btn-primary-bg);
+          color: var(--c-btn-primary-fg);
         }
         .btn-primary:hover {
-            background: var(--accent-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 20px rgba(200,164,21,0.2);
+          background: var(--c-btn-primary-bg-hover);
+          transform: translateY(-1px);
+          box-shadow: var(--c-btn-primary-shadow);
         }
-        .btn-outline {
-            background: transparent;
-            color: var(--gold);
-            border: 1px solid rgba(200,164,21,0.3);
+        .btn-primary:active {
+          background: var(--c-btn-primary-bg-active);
+          transform: translateY(0);
         }
-        .btn-outline:hover {
-            border-color: var(--gold);
-            background: rgba(200,164,21,0.05);
+        .btn-secondary {
+          background: var(--c-btn-secondary-bg);
+          color: var(--c-btn-secondary-fg);
+          border: 1px solid var(--c-btn-secondary-border);
+        }
+        .btn-secondary:hover {
+          background: var(--c-btn-secondary-bg-hover);
         }
         .btn-danger {
-            background: transparent;
-            color: var(--oxblood);
-            border: 1px solid rgba(139,26,45,0.3);
+          background: transparent;
+          color: var(--s-status-danger);
+          border: 1px solid var(--s-status-danger);
         }
         .btn-danger:hover {
-            border-color: var(--oxblood);
-            background: rgba(139,26,45,0.05);
+          background: var(--s-status-danger-bg);
         }
         .action-row {
-            display: flex; gap: 10px; margin-top: 20px;
-            flex-wrap: wrap;
+          display: flex; gap: var(--p-space-2);
+          margin-top: var(--p-space-4);
+          flex-wrap: wrap;
         }
-        .action-row .btn { flex: 1; min-width: 160px; }
+        .action-row .btn { flex: 1; min-width: 140px; }
 
-        /* ===== SEMESTER ROWS (CGPA) ===== */
+        /* ============================================
+           SEMESTER ROWS (CGPA)
+           ============================================ */
         .semester-row {
-            display: grid;
-            grid-template-columns: 1fr 90px 90px;
-            gap: 12px;
-            align-items: center;
-            padding: 16px 18px;
-            background: var(--ink-lighter);
-            border-left: 3px solid transparent;
-            margin-bottom: 2px;
-            transition: all 0.2s ease;
+          display: grid;
+          grid-template-columns: 1fr 90px 90px;
+          gap: var(--p-space-3);
+          align-items: center;
+          padding: var(--p-space-3) var(--p-space-4);
+          background: var(--c-card-bg);
+          border: 1px solid var(--c-card-border);
+          border-left: 3px solid transparent;
+          border-radius: var(--p-radius-md);
+          margin-bottom: var(--p-space-1);
+          transition: all var(--p-transition-fast);
         }
-        .semester-row:hover { border-left-color: var(--gold); }
+        .semester-row:hover {
+          border-left-color: var(--s-accent-primary);
+          border-color: var(--c-card-border-hover);
+        }
         .semester-row.excluded { opacity: 0.3; }
         .semester-name {
-            display: flex; align-items: center; gap: 12px;
+          display: flex; align-items: center; gap: var(--p-space-3);
         }
         .toggle-track {
-            width: 36px; height: 20px;
-            background: var(--lead);
-            border-radius: 10px;
-            position: relative;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: background 0.2s ease;
+          width: 36px; height: 20px;
+          background: var(--s-fg-muted);
+          border-radius: var(--p-radius-full);
+          position: relative;
+          cursor: pointer;
+          flex-shrink: 0;
+          transition: background var(--p-transition-fast);
         }
-        .toggle-track.on { background: var(--gold); }
+        .toggle-track.on {
+          background: var(--s-accent-primary);
+        }
         .toggle-track::after {
-            content: '';
-            position: absolute; top: 2px; left: 2px;
-            width: 16px; height: 16px;
-            background: var(--paper);
-            border-radius: 50%;
-            transition: transform 0.2s ease;
+          content: '';
+          position: absolute; top: 2px; left: 2px;
+          width: 16px; height: 16px;
+          background: var(--s-fg-primary);
+          border-radius: 50%;
+          transition: transform var(--p-transition-fast);
         }
-        .toggle-track.on::after { transform: translateX(16px); }
+        .toggle-track.on::after {
+          transform: translateX(16px);
+        }
         .semester-name label {
-            font-family: var(--font-display);
-            font-size: 15px; font-weight: 600;
-            color: var(--paper);
-            cursor: pointer;
+          font-family: var(--p-font-serif);
+          font-size: var(--p-text-base); font-weight: 600;
+          color: var(--s-fg-primary);
+          cursor: pointer;
         }
         .semester-input {
-            width: 100%;
-            padding: 8px 12px;
-            background: var(--ink);
-            border: 1px solid rgba(200,164,21,0.1);
-            color: var(--paper);
-            font-family: var(--font-mono);
-            font-size: 13px;
-            text-align: center;
+          width: 100%;
+          padding: var(--p-space-2) var(--p-space-3);
+          background: var(--s-bg-primary);
+          border: 1px solid var(--c-input-border);
+          border-radius: var(--p-radius-sm);
+          color: var(--c-input-fg);
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-sm);
+          text-align: center;
+          transition: all var(--p-transition-fast);
         }
         .semester-input:focus {
-            outline: none;
-            border-color: var(--gold);
+          outline: none;
+          border-color: var(--s-accent-primary);
         }
 
-        /* ===== TARGET RESULT ===== */
+        /* ============================================
+           TARGET RESULT
+           ============================================ */
         .target-result-card {
-            padding: 40px 32px;
-            text-align: center;
-            border: 2px solid;
-            position: relative;
-            margin-top: 24px;
-            animation: revealScale 0.5s ease;
+          padding: var(--p-space-10) var(--p-space-8);
+          text-align: center;
+          border: 2px solid;
+          border-radius: var(--p-radius-lg);
+          position: relative;
+          margin-top: var(--p-space-6);
+          animation: fadeScale 0.5s ease;
         }
         .target-result-card::before {
-            content: '';
-            position: absolute; top: -2px; left: 40px; right: 40px; height: 2px;
+          content: '';
+          position: absolute; top: -2px; left: 40px; right: 40px; height: 2px;
         }
         .target-result-card.achievable {
-            border-color: var(--forest);
-            background: rgba(27,77,62,0.05);
+          border-color: var(--s-status-success);
+          background: var(--s-status-success-bg);
         }
-        .target-result-card.achievable::before { background: var(--forest); }
+        .target-result-card.achievable::before { background: var(--s-status-success); }
         .target-result-card.unachievable {
-            border-color: var(--oxblood);
-            background: rgba(139,26,45,0.05);
+          border-color: var(--s-status-danger);
+          background: var(--s-status-danger-bg);
         }
-        .target-result-card.unachievable::before { background: var(--oxblood); }
+        .target-result-card.unachievable::before { background: var(--s-status-danger); }
 
         .target-result-card .result-label {
-            font-family: var(--font-mono);
-            font-size: 10px; font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-            padding: 4px 14px;
-            border: 1px solid;
-            display: inline-block;
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); font-weight: 700;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          margin-bottom: var(--p-space-4);
+          padding: var(--p-space-1) var(--p-space-3);
+          border: 1px solid;
+          display: inline-block;
+          border-radius: var(--p-radius-sm);
         }
         .target-result-card.achievable .result-label {
-            border-color: var(--forest); color: #4CAF50;
+          border-color: var(--s-status-success); color: var(--s-status-success);
         }
         .target-result-card.unachievable .result-label {
-            border-color: var(--oxblood); color: var(--oxblood);
+          border-color: var(--s-status-danger); color: var(--s-status-danger);
         }
         .target-result-card .result-value {
-            font-family: var(--font-display);
-            font-size: 56px; font-weight: 900;
-            line-height: 1;
-            margin-bottom: 8px;
+          font-family: var(--p-font-serif);
+          font-size: var(--p-text-5xl); font-weight: 700;
+          line-height: 1;
+          margin-bottom: var(--p-space-2);
         }
-        .target-result-card.achievable .result-value { color: var(--gold); }
-        .target-result-card.unachievable .result-value { color: var(--oxblood); }
+        .target-result-card.achievable .result-value { color: var(--s-accent-primary); }
+        .target-result-card.unachievable .result-value { color: var(--s-status-danger); }
         .target-result-card .result-encouragement {
-            font-family: var(--font-body);
-            font-size: 15px; font-style: italic;
-            color: var(--slate);
-            margin-bottom: 12px;
+          font-family: var(--p-font-serif);
+          font-size: var(--p-text-lg); font-style: italic;
+          color: var(--s-fg-secondary);
+          margin-bottom: var(--p-space-3);
         }
         .target-result-card .result-detail {
-            font-family: var(--font-mono);
-            font-size: 12px;
-            color: var(--slate);
-            max-width: 380px; margin: 0 auto;
-            line-height: 1.6;
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-sm);
+          color: var(--s-fg-secondary);
+          max-width: 400px; margin: 0 auto;
+          line-height: 1.6;
         }
 
-        /* ===== INPUT FIELDS ===== */
-        .input-group { margin-bottom: 16px; }
+        /* ============================================
+           INPUTS
+           ============================================ */
+        .input-group { margin-bottom: var(--p-space-4); }
         .input-label {
-            font-family: var(--font-mono);
-            font-size: 10px; font-weight: 700;
-            color: var(--gold-muted);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            display: block;
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); font-weight: 600;
+          color: var(--s-fg-tertiary);
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          margin-bottom: var(--p-space-2);
+          display: block;
         }
         .input-field {
-            width: 100%;
-            padding: 12px 16px;
-            background: var(--ink-lighter);
-            border: 1px solid rgba(200,164,21,0.12);
-            color: var(--paper);
-            font-family: var(--font-mono);
-            font-size: 14px;
-            transition: all 0.2s ease;
+          width: 100%;
+          padding: var(--p-space-3) var(--p-space-4);
+          background: var(--c-input-bg);
+          border: 1px solid var(--c-input-border);
+          border-radius: var(--p-radius-md);
+          color: var(--c-input-fg);
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-sm);
+          transition: all var(--p-transition-fast);
         }
         .input-field:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(200,164,21,0.06);
+          outline: none;
+          border-color: var(--c-input-border-focus);
+          box-shadow: 0 0 0 3px hsla(45, 85%, 48%, 0.06);
         }
-        .input-field::placeholder { color: var(--lead); }
+        .input-field::placeholder { color: var(--c-input-placeholder); }
 
-        /* ===== MODAL ===== */
+        /* ============================================
+           MODAL
+           ============================================ */
         .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(12,14,18,0.85);
-            backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-            opacity: 0; visibility: hidden;
-            transition: all 0.3s ease;
+          position: fixed; inset: 0;
+          background: hsla(220, 28%, 6%, 0.85);
+          backdrop-filter: blur(8px);
+          display: flex; align-items: center; justify-content: center;
+          z-index: 1000;
+          padding: var(--p-space-5);
+          opacity: 0; visibility: hidden;
+          transition: all var(--p-transition-base);
         }
         .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal {
-            background: var(--ink-lighter);
-            border: 1px solid rgba(200,164,21,0.15);
-            padding: 32px;
-            max-width: 460px; width: 100%;
-            max-height: 85vh; overflow-y: auto;
-            transform: translateY(20px) scale(0.97);
-            transition: all 0.3s ease;
-            position: relative;
+          background: var(--c-card-bg);
+          border: 1px solid var(--c-card-border);
+          border-radius: var(--p-radius-lg);
+          padding: var(--p-space-8);
+          max-width: 480px; width: 100%;
+          max-height: 85vh; overflow-y: auto;
+          transform: translateY(20px) scale(0.97);
+          transition: all var(--p-transition-base);
+          position: relative;
         }
         .modal-overlay.active .modal {
-            transform: translateY(0) scale(1);
+          transform: translateY(0) scale(1);
         }
         .modal::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: var(--gold);
+          content: '';
+          position: absolute; top: 0; left: 0; right: 0; height: 3px;
+          background: var(--s-accent-primary);
+          border-radius: var(--p-radius-lg) var(--p-radius-lg) 0 0;
         }
         .modal-title {
-            font-family: var(--font-display);
-            font-size: 24px; font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--paper);
+          font-family: var(--p-font-serif);
+          font-size: var(--p-text-2xl); font-weight: 600;
+          margin-bottom: var(--p-space-5);
+          color: var(--s-fg-primary);
         }
         .modal-close {
-            position: absolute; top: 16px; right: 16px;
-            width: 32px; height: 32px;
-            border: 1px solid rgba(200,164,21,0.15);
-            background: transparent;
-            color: var(--slate);
-            cursor: pointer; font-size: 16px;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s ease;
+          position: absolute; top: var(--p-space-4); right: var(--p-space-4);
+          width: 32px; height: 32px;
+          border: 1px solid var(--s-border-default);
+          background: transparent;
+          color: var(--s-fg-tertiary);
+          cursor: pointer; font-size: 18px;
+          display: flex; align-items: center; justify-content: center;
+          border-radius: var(--p-radius-md);
+          transition: all var(--p-transition-fast);
         }
-        .modal-close:hover { color: var(--paper); border-color: var(--gold); }
+        .modal-close:hover { color: var(--s-fg-primary); border-color: var(--s-accent-primary); }
 
-        /* ===== CATALOG ===== */
-        .catalog-search {
-            margin-bottom: 12px;
-        }
+        /* ============================================
+           CATALOG
+           ============================================ */
+        .catalog-search { margin-bottom: var(--p-space-3); }
         .catalog-list {
-            max-height: 160px; overflow-y: auto;
-            border: 1px solid rgba(200,164,21,0.1);
-            padding: 4px;
+          max-height: 160px; overflow-y: auto;
+          border: 1px solid var(--s-border-default);
+          border-radius: var(--p-radius-md);
+          padding: var(--p-space-1);
         }
         .catalog-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 12px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            font-family: var(--font-body);
-            font-size: 14px; color: var(--paper);
+          display: flex; justify-content: space-between; align-items: center;
+          padding: var(--p-space-2) var(--p-space-3);
+          cursor: pointer;
+          transition: all var(--p-transition-fast);
+          font-size: var(--p-text-sm); color: var(--s-fg-primary);
+          border-radius: var(--p-radius-sm);
         }
-        .catalog-item:hover {
-            background: rgba(200,164,21,0.06);
-        }
+        .catalog-item:hover { background: var(--s-accent-primary-subtle); }
         .catalog-item .cr {
-            font-family: var(--font-mono);
-            font-size: 10px; color: var(--gold);
-            letter-spacing: 1px;
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); color: var(--s-accent-primary);
+          letter-spacing: 0.05em;
         }
         .credit-options {
-            display: flex; gap: 8px;
+          display: flex; gap: var(--p-space-2);
         }
         .credit-option {
-            flex: 1; padding: 10px;
-            border: 1px solid rgba(200,164,21,0.12);
-            text-align: center;
-            cursor: pointer;
-            font-family: var(--font-mono);
-            font-weight: 700;
-            font-size: 14px;
-            color: var(--slate);
-            transition: all 0.2s ease;
+          flex: 1; padding: var(--p-space-2);
+          border: 1px solid var(--s-border-default);
+          border-radius: var(--p-radius-sm);
+          text-align: center;
+          cursor: pointer;
+          font-family: var(--p-font-mono);
+          font-weight: 700;
+          font-size: var(--p-text-sm);
+          color: var(--s-fg-tertiary);
+          transition: all var(--p-transition-fast);
         }
-        .credit-option:hover { border-color: var(--gold); color: var(--paper); }
+        .credit-option:hover { border-color: var(--s-accent-primary); color: var(--s-fg-primary); }
         .credit-option.selected {
-            background: var(--gold);
-            color: var(--ink);
-            border-color: var(--gold);
+          background: var(--s-accent-primary);
+          color: var(--p-slate-950);
+          border-color: var(--s-accent-primary);
         }
 
-        /* ===== ACCORDION ===== */
+        /* ============================================
+           ACCORDION
+           ============================================ */
         .accordion-trigger {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 0;
-            cursor: pointer;
-            font-family: var(--font-mono);
-            font-size: 11px; font-weight: 700;
-            color: var(--gold-muted);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            border-top: 1px solid rgba(200,164,21,0.08);
-            margin-top: 16px;
+          display: flex; justify-content: space-between; align-items: center;
+          padding: var(--p-space-3) 0;
+          cursor: pointer;
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); font-weight: 600;
+          color: var(--s-fg-tertiary);
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          border-top: 1px solid var(--s-border-default);
+          margin-top: var(--p-space-4);
+          transition: color var(--p-transition-fast);
         }
+        .accordion-trigger:hover { color: var(--s-accent-primary); }
         .accordion-body {
-            display: none;
-            padding-bottom: 8px;
+          display: none;
+          padding-bottom: var(--p-space-2);
         }
-        .accordion-body.open { display: block; animation: revealUp 0.3s ease; }
+        .accordion-body.open { display: block; animation: fadeUp 0.3s ease; }
         .calc-detail-row {
-            display: flex; justify-content: space-between;
-            padding: 5px 0;
-            font-family: var(--font-mono);
-            font-size: 12px; color: var(--slate);
+          display: flex; justify-content: space-between;
+          padding: var(--p-space-1) 0;
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); color: var(--s-fg-secondary);
         }
         .calc-detail-row.total {
-            border-top: 1px solid rgba(200,164,21,0.1);
-            margin-top: 8px; padding-top: 10px;
-            color: var(--paper); font-weight: 700;
+          border-top: 1px solid var(--s-border-default);
+          margin-top: var(--p-space-2); padding-top: var(--p-space-2);
+          color: var(--s-fg-primary); font-weight: 700;
         }
 
-        /* ===== EMPTY STATE ===== */
+        /* ============================================
+           EMPTY STATE
+           ============================================ */
         .empty-state {
-            text-align: center; padding: 48px 20px;
-            color: var(--slate);
+          text-align: center; padding: var(--p-space-12) var(--p-space-5);
+          color: var(--s-fg-tertiary);
         }
-        .empty-state .icon { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
-        .empty-state p { font-family: var(--font-body); font-size: 15px; font-style: italic; }
+        .empty-state .icon { font-size: 36px; margin-bottom: var(--p-space-3); opacity: 0.5; }
+        .empty-state p { font-family: var(--p-font-serif); font-size: var(--p-text-base); font-style: italic; }
 
-        /* ===== NAVIGATION ===== */
+        /* ============================================
+           NAVIGATION
+           ============================================ */
         .nav-bar {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--ink);
-            border-top: 1px solid rgba(200,164,21,0.1);
-            z-index: 100;
-            backdrop-filter: blur(20px);
+          position: fixed; bottom: 0; left: 0; right: 0;
+          background: hsla(var(--p-hue-primary), 28%, 6%, 0.9);
+          backdrop-filter: blur(16px);
+          border-top: 1px solid var(--s-border-default);
+          z-index: 100;
+        }
+        [data-theme="light"] .nav-bar {
+          background: hsla(220, 20%, 98%, 0.9);
         }
         .nav-inner {
-            max-width: 720px; margin: 0 auto;
-            display: flex; justify-content: space-around;
-            padding: 10px 16px 18px;
+          max-width: 680px; margin: 0 auto;
+          display: flex; justify-content: space-around;
+          padding: var(--p-space-2) var(--p-space-4) var(--p-space-4);
         }
         .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            gap: 4px; padding: 8px 24px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: none; background: none;
-            color: var(--slate);
-            font-family: var(--font-mono);
-            font-size: 9px; font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
+          display: flex; flex-direction: column; align-items: center;
+          gap: var(--p-space-1); padding: var(--p-space-2) var(--p-space-5);
+          cursor: pointer;
+          transition: all var(--p-transition-fast);
+          border: none; background: none;
+          color: var(--s-fg-muted);
+          font-family: var(--p-font-mono);
+          font-size: var(--p-text-xs); font-weight: 600;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
         }
-        .nav-item:hover { color: var(--paper); }
-        .nav-item.active { color: var(--gold); }
+        .nav-item:hover { color: var(--s-fg-secondary); }
+        .nav-item.active { color: var(--s-accent-primary); }
         .nav-item .nav-icon {
-            font-size: 20px;
-            opacity: 0.7;
-            transition: all 0.2s ease;
+          font-size: 20px;
+          opacity: 0.6;
+          transition: opacity var(--p-transition-fast);
         }
         .nav-item.active .nav-icon { opacity: 1; }
 
-        /* ===== GRID LAYOUT FOR TARGET ===== */
+        /* ============================================
+           FORM GRID
+           ============================================ */
         .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: var(--p-space-4);
         }
 
-        /* ===== SCROLLBAR ===== */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(200,164,21,0.15); border-radius: 2px; }
-
-        /* ===== RESPONSIVE ===== */
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
         @media (max-width: 640px) {
-            .header-inner { padding: 16px 16px; }
-            .header-title h1 { font-size: 18px; }
-            .header-seal { width: 38px; height: 38px; font-size: 16px; }
-            .main { padding: 20px 14px 100px; }
-            .section-header h2 { font-size: 26px; }
-            .gpa-hero { padding: 24px 20px; }
-            .gpa-hero-left .value { font-size: 48px; }
-            .course-inputs { grid-template-columns: 1fr 80px; }
-            .semester-row { grid-template-columns: 1fr 70px 70px; gap: 8px; padding: 12px 14px; }
-            .form-grid { grid-template-columns: 1fr; }
-            .nav-item { padding: 6px 16px; }
-            .target-result-card .result-value { font-size: 44px; }
-            .modal { padding: 24px; }
+          .brand-text h1 { font-size: var(--p-text-base); }
+          .brand-icon { width: 36px; height: 36px; font-size: 18px; }
+          .section-header h2 { font-size: var(--p-text-2xl); }
+          .gpa-main .value { font-size: var(--p-text-4xl); }
+          .course-inputs { grid-template-columns: 1fr 80px; }
+          .semester-row { grid-template-columns: 1fr 70px 70px; gap: var(--p-space-2); padding: var(--p-space-3); }
+          .form-grid { grid-template-columns: 1fr; }
+          .nav-item { padding: var(--p-space-2) var(--p-space-3); }
+          .target-result-card .result-value { font-size: var(--p-text-4xl); }
+          .modal { padding: var(--p-space-5); }
+          .gpa-display { padding: var(--p-space-4); }
         }
 
         @media (min-width: 768px) {
-            .gpa-hero-inner { align-items: center; }
+          .gpa-display-inner { align-items: center; }
         }
 
-        /* ===== UTILITIES ===== */
+        /* ============================================
+           UTILITIES
+           ============================================ */
         .hidden { display: none !important; }
     </style>
 </head>
-<body>
-    <div class="deco-grid"></div>
-    <div class="deco-cross"></div>
-
+<body data-theme="dark">
     <div class="app">
         <header class="header">
-            <div class="header-inner">
-                <div class="header-brand">
-                    <div class="header-seal">A</div>
-                    <div class="header-title">
-                        <h1>ACT GPA</h1>
-                        <div class="header-line"></div>
+            <div class="container header-inner">
+                <div class="brand">
+                    <div class="brand-icon">A</div>
+                    <div class="brand-text">
+                        <h1>ACT GPA Calculator</h1>
                         <span>Computer Science</span>
                     </div>
                 </div>
@@ -911,135 +1088,133 @@
         </header>
 
         <main class="main">
-            <!-- GPA TAB -->
-            <div class="tab-content active" id="tab-gpa">
-                <div class="section-header reveal">
-                    <h2>Semester GPA</h2>
-                    <p>Calculate your GPA for the current semester.</p>
-                </div>
-
-                <div class="selector-row reveal reveal-d1">
-                    <div class="select-wrapper">
-                        <select id="semesterSelect"></select>
+            <div class="container">
+                <!-- GPA TAB -->
+                <div class="tab-content active" id="tab-gpa">
+                    <div class="section-header anim-fade-up">
+                        <h2>Semester GPA</h2>
+                        <p>Calculate your GPA for the current semester.</p>
                     </div>
-                    <div class="credit-pill" id="creditPill">0 / 21 CR</div>
-                </div>
 
-                <div class="gpa-hero reveal reveal-d2">
-                    <div class="gpa-hero-inner">
-                        <div class="gpa-hero-left">
-                            <div class="label">Cumulative Grade Point Average</div>
-                            <div class="value" id="gpaValue">0.00</div>
-                            <div class="major-gpa" id="majorGpaDisplay"></div>
+                    <div class="selector-row anim-fade-up anim-d1">
+                        <div class="select-wrapper">
+                            <select id="semesterSelect"></select>
                         </div>
-                        <div class="gpa-hero-right">
-                            <div class="label">Credits Earned</div>
-                            <div class="value" id="creditsValue">0</div>
+                        <div class="credit-pill" id="creditPill">0 / 21 CR</div>
+                    </div>
+
+                    <div class="gpa-display anim-fade-up anim-d2">
+                        <div class="gpa-display-inner">
+                            <div class="gpa-main">
+                                <div class="label">Grade Point Average</div>
+                                <div class="value" id="gpaValue">0.00</div>
+                                <div class="major-gpa" id="majorGpaDisplay"></div>
+                            </div>
+                            <div class="gpa-sub">
+                                <div class="label">Credits</div>
+                                <div class="value" id="creditsValue">0</div>
+                            </div>
+                        </div>
+                        <div class="gpa-progress">
+                            <div class="gpa-progress-track">
+                                <div class="gpa-progress-fill" id="gpaProgress" style="width:0%"></div>
+                            </div>
+                            <div class="gpa-progress-labels">
+                                <span>0.0</span><span>2.0</span><span>4.0</span>
+                            </div>
+                        </div>
+                        <div class="accordion-trigger" onclick="toggleAccordion(this)">
+                            <span>View Calculation Details</span>
+                            <span id="accordionArrow">↓</span>
+                        </div>
+                        <div class="accordion-body" id="calcDetails">
+                            <div id="calcDetailsContent"></div>
                         </div>
                     </div>
-                    <div class="gpa-progress-track">
-                        <div class="gpa-progress-fill" id="gpaProgress" style="width:0%"></div>
-                    </div>
-                    <div class="gpa-progress-labels">
-                        <span>0.0</span>
-                        <span>2.0</span>
-                        <span>4.0</span>
-                    </div>
 
-                    <div class="accordion-trigger" onclick="toggleAccordion(this)">
-                        <span>View Calculation Details</span>
-                        <span id="accordionArrow">↓</span>
-                    </div>
-                    <div class="accordion-body" id="calcDetails">
-                        <div id="calcDetailsContent"></div>
-                    </div>
-                </div>
-
-                <div class="reveal reveal-d3">
-                    <div class="course-list" id="coursesList"></div>
-                    <div class="action-row">
-                        <button class="btn btn-outline" onclick="openAddCourseModal()">+ Add Course</button>
-                        <button class="btn btn-primary" onclick="resetSemester()">↻ Reset</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CGPA TAB -->
-            <div class="tab-content" id="tab-cgpa">
-                <div class="section-header reveal">
-                    <h2>Cumulative GPA</h2>
-                    <p>Track your overall academic performance across all semesters.</p>
-                </div>
-
-                <div class="gpa-hero reveal reveal-d1">
-                    <div class="gpa-hero-inner">
-                        <div class="gpa-hero-left">
-                            <div class="label">Cumulative Grade Point Average</div>
-                            <div class="value" id="cgpaValue">0.00</div>
-                            <div class="major-gpa" id="majorCgpaDisplay"></div>
-                            <div id="standingBadge" class="standing-badge standing-good">Not Established</div>
-                        </div>
-                        <div class="gpa-hero-right">
-                            <div class="label">Total Credits</div>
-                            <div class="value" id="totalCreditsValue">0</div>
+                    <div class="anim-fade-up anim-d3">
+                        <div class="course-list" id="coursesList"></div>
+                        <div class="action-row">
+                            <button class="btn btn-secondary" onclick="openAddCourseModal()">+ Add Course</button>
+                            <button class="btn btn-primary" onclick="resetSemester()">↻ Reset</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="reveal reveal-d2">
-                    <div id="semestersList"></div>
-                    <div class="action-row">
-                        <button class="btn btn-danger" onclick="resetAll()">⚠ Reset All Records</button>
+                <!-- CGPA TAB -->
+                <div class="tab-content" id="tab-cgpa">
+                    <div class="section-header anim-fade-up">
+                        <h2>Cumulative GPA</h2>
+                        <p>Track your overall academic performance across all semesters.</p>
                     </div>
-                </div>
-            </div>
 
-            <!-- TARGET TAB -->
-            <div class="tab-content" id="tab-target">
-                <div class="section-header reveal">
-                    <h2>Target Calculator</h2>
-                    <p>Determine the GPA you need to achieve your goal.</p>
-                </div>
-
-                <div class="reveal reveal-d1" style="background:var(--ink-lighter); border:1px solid rgba(200,164,21,0.1); padding:24px;">
-                    <div class="form-grid">
-                        <div class="input-group">
-                            <label class="input-label">Current CGPA</label>
-                            <input type="text" class="input-field" id="targetCurrentCgpa" placeholder="3.25">
-                        </div>
-                        <div class="input-group">
-                            <label class="input-label">Credits Completed</label>
-                            <input type="text" class="input-field" id="targetDoneCredits" placeholder="78">
-                        </div>
-                        <div class="input-group">
-                            <label class="input-label">Target CGPA</label>
-                            <input type="text" class="input-field" id="targetCgpaInput" placeholder="3.75">
-                        </div>
-                        <div class="input-group">
-                            <label class="input-label">Remaining Credits</label>
-                            <input type="text" class="input-field" id="targetRemainingCredits" placeholder="42">
+                    <div class="gpa-display anim-fade-up anim-d1">
+                        <div class="gpa-display-inner">
+                            <div class="gpa-main">
+                                <div class="label">Cumulative GPA</div>
+                                <div class="value" id="cgpaValue">0.00</div>
+                                <div class="major-gpa" id="majorCgpaDisplay"></div>
+                                <div id="standingBadge" class="standing-badge standing-good">Not Established</div>
+                            </div>
+                            <div class="gpa-sub">
+                                <div class="label">Total Credits</div>
+                                <div class="value" id="totalCreditsValue">0</div>
+                            </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary" style="width:100%; margin-top:16px;" onclick="calculateTarget()">→ Calculate Required GPA</button>
+
+                    <div class="anim-fade-up anim-d2">
+                        <div id="semestersList"></div>
+                        <div class="action-row">
+                            <button class="btn btn-danger" onclick="resetAll()">⚠ Reset All</button>
+                        </div>
+                    </div>
                 </div>
 
-                <div id="targetResult"></div>
+                <!-- TARGET TAB -->
+                <div class="tab-content" id="tab-target">
+                    <div class="section-header anim-fade-up">
+                        <h2>Target Calculator</h2>
+                        <p>Determine the GPA you need to reach your goal.</p>
+                    </div>
+
+                    <div class="anim-fade-up anim-d1" style="background:var(--c-card-bg);border:1px solid var(--c-card-border);border-radius:var(--p-radius-lg);padding:var(--p-space-6);">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label class="input-label">Current CGPA</label>
+                                <input type="text" class="input-field" id="targetCurrentCgpa" placeholder="3.25">
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Credits Done</label>
+                                <input type="text" class="input-field" id="targetDoneCredits" placeholder="78">
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Target CGPA</label>
+                                <input type="text" class="input-field" id="targetCgpaInput" placeholder="3.75">
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Credits Left</label>
+                                <input type="text" class="input-field" id="targetRemainingCredits" placeholder="42">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="width:100%;margin-top:var(--p-space-4);" onclick="calculateTarget()">→ Calculate</button>
+                    </div>
+
+                    <div id="targetResult"></div>
+                </div>
             </div>
         </main>
 
         <nav class="nav-bar">
             <div class="nav-inner">
                 <button class="nav-item active" data-tab="gpa" onclick="switchTab('gpa')">
-                    <span class="nav-icon">∑</span>
-                    <span>GPA</span>
+                    <span class="nav-icon">∑</span><span>GPA</span>
                 </button>
                 <button class="nav-item" data-tab="cgpa" onclick="switchTab('cgpa')">
-                    <span class="nav-icon">∫</span>
-                    <span>CGPA</span>
+                    <span class="nav-icon">∫</span><span>CGPA</span>
                 </button>
                 <button class="nav-item" data-tab="target" onclick="switchTab('target')">
-                    <span class="nav-icon">→</span>
-                    <span>Target</span>
+                    <span class="nav-icon">→</span><span>Target</span>
                 </button>
             </div>
         </nav>
@@ -1054,11 +1229,11 @@
                 <input type="text" class="input-field" id="catalogSearch" placeholder="Search catalog..." oninput="filterCatalog()">
             </div>
             <div class="catalog-list" id="catalogList"></div>
-            <div style="margin-top:16px;">
+            <div style="margin-top:var(--p-space-4);">
                 <label class="input-label">Or enter custom name</label>
                 <input type="text" class="input-field" id="customCourseName" placeholder="Course name">
             </div>
-            <div style="margin-top:16px;">
+            <div style="margin-top:var(--p-space-4);">
                 <label class="input-label">Credits</label>
                 <div class="credit-options" id="creditOptions">
                     <div class="credit-option selected" data-cr="1" onclick="selectCredit(1)">1</div>
@@ -1067,8 +1242,8 @@
                     <div class="credit-option" data-cr="4" onclick="selectCredit(4)">4</div>
                 </div>
             </div>
-            <div class="action-row" style="margin-top:20px;">
-                <button class="btn btn-outline" onclick="closeAddCourseModal()">Cancel</button>
+            <div class="action-row" style="margin-top:var(--p-space-5);">
+                <button class="btn btn-secondary" onclick="closeAddCourseModal()">Cancel</button>
                 <button class="btn btn-primary" onclick="addCourse()">Add</button>
             </div>
         </div>
@@ -1274,12 +1449,11 @@
             majorEl.textContent = detail.majorGpa > 0 ? `Major GPA: ${detail.majorGpa.toFixed(2)}` : '';
             const pill = document.getElementById('creditPill');
             pill.textContent = `${detail.totalCredits} / 21 CR`;
-            pill.style.borderColor = detail.totalCredits > 21 ? 'var(--oxblood)' : 'rgba(200,164,21,0.15)';
-            pill.style.color = detail.totalCredits > 21 ? 'var(--oxblood)' : 'var(--gold)';
+            pill.className = detail.totalCredits > 21 ? 'credit-pill warning' : 'credit-pill';
 
             const detailsEl = document.getElementById('calcDetailsContent');
             if (detail.validCourses.length === 0) {
-                detailsEl.innerHTML = '<p style="color:var(--slate);font-style:italic;">No courses with valid marks to show.</p>';
+                detailsEl.innerHTML = '<p style="color:var(--s-fg-tertiary);font-style:italic;">No courses with valid marks to show.</p>';
             } else {
                 let html = ''; let totalGP = 0;
                 detail.validCourses.forEach(c => {
@@ -1288,7 +1462,7 @@
                     totalGP += contrib;
                     html += `<div class="calc-detail-row"><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.name}</span><span>${c.letterGrade || 'F'} (${gp.toFixed(2)}) × ${c.creditHours}cr = ${contrib.toFixed(1)}</span></div>`;
                 });
-                html += `<div class="calc-detail-row total"><span>Total Grade Points</span><span style="color:var(--gold)">${totalGP.toFixed(2)}</span></div>`;
+                html += `<div class="calc-detail-row total"><span>Total Grade Points</span><span style="color:var(--s-accent-primary)">${totalGP.toFixed(2)}</span></div>`;
                 detailsEl.innerHTML = html;
             }
 
@@ -1447,7 +1621,7 @@
             const resultEl = document.getElementById('targetResult');
 
             if (currentCgpa <= 0 || targetCgpa <= 0 || remainingCredits <= 0) {
-                resultEl.innerHTML = '<div class="target-result-card unachievable" style="border-color:var(--warning);background:rgba(156,107,26,0.05);"><div class="result-label" style="border-color:var(--warning);color:var(--warning)">Invalid Input</div><div class="result-detail">Please enter valid positive numbers for all fields.</div></div>';
+                resultEl.innerHTML = '<div class="target-result-card unachievable" style="border-color:var(--s-status-warning);background:var(--s-status-warning-bg);"><div class="result-label" style="border-color:var(--s-status-warning);color:var(--s-status-warning)">Invalid Input</div><div class="result-detail">Please enter valid positive numbers for all fields.</div></div>';
                 return;
             }
             if (currentCgpa > 4 || targetCgpa > 4) {
