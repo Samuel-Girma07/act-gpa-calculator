@@ -65,29 +65,14 @@
             color: var(--fg-primary);
             min-height: 100vh;
             overflow-x: hidden;
-            cursor: none;
             transition: background 0.4s ease, color 0.4s ease;
         }
 
-        /* Custom Cursor */
-        .cursor {
-            width: 12px; height: 12px;
-            background: var(--accent);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: difference;
-            transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
-        }
-        .cursor.hover {
-            width: 40px; height: 40px;
-            background: transparent;
-            border: 2px solid var(--accent);
-        }
-        @media (pointer: coarse) {
-            .cursor { display: none; }
-            body { cursor: auto; }
+        /* Custom Cursor - only on fine pointer devices */
+        @media (pointer: fine) {
+            body {
+                cursor: none;
+            }
         }
 
         /* Background Gradient Mesh */
@@ -99,6 +84,27 @@
                 radial-gradient(ellipse at 50% 50%, rgba(100,100,255,0.03) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
+        }
+
+        /* Custom Cursor Element */
+        .cursor {
+            width: 12px; height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
+            display: none;
+        }
+        @media (pointer: fine) {
+            .cursor { display: block; }
+        }
+        .cursor.hover {
+            width: 40px; height: 40px;
+            background: transparent;
+            border: 2px solid var(--accent);
         }
 
         /* Scrollbar */
@@ -118,18 +124,6 @@
         @keyframes scaleIn {
             from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
         }
 
         .anim-fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
@@ -188,7 +182,7 @@
             background: var(--bg-glass);
             backdrop-filter: blur(10px);
             color: var(--fg-secondary);
-            cursor: none;
+            cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             font-size: 16px;
             transition: all 0.3s ease;
@@ -289,7 +283,7 @@
             font-family: var(--font-sans);
             font-size: 14px; font-weight: 600;
             color: var(--fg-primary);
-            cursor: none;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
         .select-wrapper select:hover, .select-wrapper select:focus {
@@ -397,7 +391,7 @@
             width: 20px; height: 20px;
             accent-color: var(--accent);
             margin-top: 2px; flex-shrink: 0;
-            cursor: none;
+            cursor: pointer;
         }
         .course-name {
             font-size: 16px; font-weight: 600;
@@ -428,16 +422,29 @@
             width: 32px; height: 32px;
             border-radius: 8px;
             border: none;
-            background: transparent;
-            color: var(--fg-muted);
-            cursor: none;
+            background: var(--danger-bg);
+            color: var(--danger);
+            cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             font-size: 18px;
-            opacity: 0;
+            opacity: 0.7;
             transition: all 0.2s ease;
         }
-        .course-card:hover .course-delete { opacity: 1; }
-        .course-delete:hover { background: var(--danger-bg); color: var(--danger); }
+        .course-card:hover .course-delete {
+            opacity: 1;
+            background: var(--danger-bg);
+        }
+        .course-delete:hover {
+            background: var(--danger) !important;
+            color: white;
+            transform: scale(1.1);
+        }
+        @media (pointer: coarse) {
+            .course-delete {
+                opacity: 1;
+                background: var(--danger-bg);
+            }
+        }
 
         .course-inputs {
             display: grid; grid-template-columns: 1fr 110px;
@@ -467,11 +474,11 @@
         .flag {
             display: flex; align-items: center; gap: 6px;
             font-size: 13px; color: var(--fg-secondary);
-            cursor: none;
+            cursor: pointer;
             transition: color 0.2s ease;
         }
         .flag:hover { color: var(--fg-primary); }
-        .flag input { accent-color: var(--accent); cursor: none; }
+        .flag input { accent-color: var(--accent); cursor: pointer; }
         .flag.retake input { accent-color: var(--danger); }
 
         /* Buttons */
@@ -481,7 +488,7 @@
             border-radius: 16px;
             font-family: var(--font-sans);
             font-size: 14px; font-weight: 600;
-            cursor: none;
+            cursor: pointer;
             transition: all 0.3s ease;
             border: none;
             position: relative;
@@ -560,7 +567,7 @@
             background: var(--fg-muted);
             border-radius: 11px;
             position: relative;
-            cursor: none;
+            cursor: pointer;
             flex-shrink: 0;
             transition: all 0.3s ease;
         }
@@ -580,7 +587,7 @@
         .semester-name label {
             font-size: 15px; font-weight: 600;
             color: var(--fg-primary);
-            cursor: none;
+            cursor: pointer;
         }
         .semester-input {
             width: 100%;
@@ -736,7 +743,7 @@
             border: 1px solid var(--border-default);
             background: transparent;
             color: var(--fg-muted);
-            cursor: none;
+            cursor: pointer;
             font-size: 20px;
             display: flex; align-items: center; justify-content: center;
             transition: all 0.2s ease;
@@ -755,7 +762,7 @@
         .catalog-item {
             display: flex; justify-content: space-between; align-items: center;
             padding: 8px 12px; border-radius: 8px;
-            cursor: none;
+            cursor: pointer;
             transition: all 0.2s ease;
             font-size: 14px; color: var(--fg-primary);
         }
@@ -775,7 +782,7 @@
             border: 1px solid var(--border-default);
             border-radius: 12px;
             text-align: center;
-            cursor: none;
+            cursor: pointer;
             font-family: var(--font-mono);
             font-weight: 700;
             font-size: 14px;
@@ -794,7 +801,7 @@
         .accordion-trigger {
             display: flex; justify-content: space-between; align-items: center;
             padding: 16px 0;
-            cursor: none;
+            cursor: pointer;
             font-family: var(--font-mono);
             font-size: 11px; font-weight: 700;
             color: var(--fg-muted);
@@ -850,7 +857,7 @@
             display: flex; flex-direction: column; align-items: center;
             gap: 4px; padding: 10px 24px;
             border-radius: 14px;
-            cursor: none;
+            cursor: pointer;
             transition: all 0.3s ease;
             border: none; background: none;
             color: var(--fg-muted);
@@ -871,6 +878,10 @@
 
         /* Main Content */
         .main { flex: 1; padding-bottom: 120px; }
+
+        /* Tab Content */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
 
         /* Responsive */
         @media (max-width: 640px) {
