@@ -484,10 +484,10 @@ class GPAViewModel(private val repository: GPACalculatorRepository) : ViewModel(
                 }
                 
                 val generativeModel = GenerativeModel(
-                    modelName = "gemini-1.5-flash",
+                    modelName = "gemini-1.5-flash", 
                     apiKey = apiKey
                 )
-
+                
                 val prompt = """
                     Analyze the image or PDF of this academic transcript or syllabus.
                     Extract the courses with their corresponding credit hours and obtained grades or marks.
@@ -552,7 +552,7 @@ class GPAViewModel(private val repository: GPACalculatorRepository) : ViewModel(
                 }
                 
                 val generativeModel = GenerativeModel(
-                    modelName = "gemini-1.5-flash",
+                    modelName = "gemini-1.5-flash", 
                     apiKey = apiKey
                 )
                 
