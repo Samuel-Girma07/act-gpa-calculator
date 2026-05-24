@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Dark Academic Palette */
             --bg-primary: #0c1220;
             --bg-secondary: #111827;
             --bg-tertiary: #1a2236;
@@ -19,17 +18,14 @@
             --fg-secondary: #9ca3af;
             --fg-muted: #6b7280;
             
-            /* Academic Gold */
             --accent: #c9a227;
             --accent-hover: #d4b43a;
             --accent-dim: rgba(201, 162, 39, 0.15);
             --accent-glow: rgba(201, 162, 39, 0.2);
             
-            /* Academic Green for success */
             --success: #4ade80;
             --success-bg: rgba(74, 222, 128, 0.1);
             
-            /* Academic Red */
             --danger: #f87171;
             --danger-bg: rgba(248, 113, 113, 0.1);
             
@@ -223,6 +219,121 @@
         }
         .card:hover {
             border-color: var(--border-hover);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border-default);
+            border-radius: 12px;
+            padding: 32px 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+        }
+        .upload-area.dragover {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+        }
+        .upload-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        .upload-text {
+            font-family: var(--font-serif);
+            font-size: 16px;
+            color: var(--fg-primary);
+            margin-bottom: 4px;
+        }
+        .upload-hint {
+            font-size: 12px;
+            color: var(--fg-muted);
+        }
+        .file-input {
+            display: none;
+        }
+
+        /* Processing Status */
+        .processing-status {
+            padding: 16px;
+            background: var(--accent-dim);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .processing-status.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        .processing-status .status-text {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent);
+        }
+        .processing-status .progress-bar {
+            height: 3px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .processing-status .progress-bar-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.3s ease;
+            animation: pulse-progress 1.5s ease infinite;
+        }
+        @keyframes pulse-progress {
+            0% { width: 0%; opacity: 0.5; }
+            50% { width: 70%; opacity: 1; }
+            100% { width: 100%; opacity: 0.5; }
+        }
+
+        /* Extracted Data Preview */
+        .extracted-preview {
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .extracted-preview.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        .extracted-preview h4 {
+            font-family: var(--font-serif);
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--fg-primary);
+        }
+        .extracted-preview .semester-summary {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--fg-secondary);
+            margin-bottom: 12px;
+        }
+        .extracted-preview .course-list-preview {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .extracted-preview .course-item-preview {
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-default);
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .extracted-preview .course-item-preview:last-child {
+            border-bottom: none;
         }
 
         /* Selector */
@@ -798,7 +909,35 @@
 
                 <!-- GPA TAB -->
                 <div class="tab-content active" id="tab-gpa">
+                    <!-- Transcript Upload -->
                     <div class="card anim-fade-up anim-d1">
+                        <h3 style="font-family:var(--font-serif);font-size:18px;margin-bottom:12px;">Import Transcript</h3>
+                        <p style="font-size:13px;color:var(--fg-secondary);margin-bottom:16px;">Upload your transcript (PDF or image) and AI will extract your grades automatically.</p>
+                        
+                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                            <div class="upload-icon">📄</div>
+                            <div class="upload-text">Drop transcript here or click to browse</div>
+                            <div class="upload-hint">Supports PDF, PNG, JPG (max 5MB)</div>
+                        </div>
+                        <input type="file" class="file-input" id="fileInput" accept=".pdf,.png,.jpg,.jpeg" onchange="handleFileUpload(this)">
+                        
+                        <div class="processing-status" id="processingStatus">
+                            <div class="status-text">🔍 Analyzing transcript with Gemini AI...</div>
+                            <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+                        </div>
+                        
+                        <div class="extracted-preview" id="extractedPreview">
+                            <h4>✓ Extracted Data</h4>
+                            <div class="semester-summary" id="extractedSummary"></div>
+                            <div class="course-list-preview" id="extractedCourses"></div>
+                            <div class="action-row" style="margin-top:12px;">
+                                <button class="btn btn-secondary" onclick="cancelExtractedData()">Cancel</button>
+                                <button class="btn btn-primary" onclick="applyExtractedData()">Apply to Calculator</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card anim-fade-up anim-d2">
                         <div class="selector-row">
                             <div class="select-wrapper">
                                 <select id="semesterSelect"></select>
@@ -1013,6 +1152,11 @@
         };
 
         let state = { semesters: {}, courses: {}, activeTab: 'gpa', selectedSemester: 'Y1S1', targetCredits: 3 };
+        let extractedData = null;
+
+        // ===== GEMINI API CONFIG =====
+        const GEMINI_API_KEY = 'AIzaSyC-D-25PkhxEY5mbB4LJjdIkRADQr1Nop8';
+        const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
         function init() {
             loadState();
@@ -1020,6 +1164,7 @@
             populateSemesterSelect();
             renderAll();
             setupEventListeners();
+            setupDragAndDrop();
             loadTheme();
         }
 
@@ -1121,6 +1266,207 @@
             return { cgpa, majorCgpa: allMajorCr > 0 ? round2(allMajorGP / allMajorCr) : 0, totalCredits, standing, semData };
         }
 
+        // ===== TRANSCRIPT UPLOAD & AI EXTRACTION =====
+        function setupDragAndDrop() {
+            const uploadArea = document.getElementById('uploadArea');
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    processTranscriptFile(files[0]);
+                }
+            });
+        }
+
+        function handleFileUpload(input) {
+            if (input.files && input.files[0]) {
+                processTranscriptFile(input.files[0]);
+            }
+        }
+
+        function processTranscriptFile(file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File too large. Maximum size is 5MB.');
+                return;
+            }
+
+            // Show processing status
+            document.getElementById('processingStatus').classList.add('active');
+            document.getElementById('extractedPreview').classList.remove('active');
+            extractedData = null;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64Data = e.target.result.split(',')[1];
+                const mimeType = file.type || 'application/pdf';
+                
+                try {
+                    const extracted = await extractTranscriptWithGemini(base64Data, mimeType);
+                    extractedData = extracted;
+                    showExtractedPreview(extracted);
+                } catch (err) {
+                    console.error('Extraction error:', err);
+                    alert('Failed to extract transcript. Please try again or enter courses manually.');
+                } finally {
+                    document.getElementById('processingStatus').classList.remove('active');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function extractTranscriptWithGemini(base64Data, mimeType) {
+            const prompt = `Analyze this academic transcript image/document. Extract ALL courses with their:
+- Course name
+- Credit hours  
+- Marks/grades (numeric 0-100 or letter grade)
+- Semester/term
+
+Return ONLY a JSON object in this exact format:
+{
+  "semesters": [
+    {
+      "name": "Year 1 Semester 1",
+      "courses": [
+        {"name": "Course Name", "credits": 3, "mark": 85, "grade": "A"}
+      ]
+    }
+  ]
+}
+
+If a mark is not available but a grade is, set mark to null and provide the grade.
+Use the ACT grade scale: A+=4.0, A=4.0, A-=3.75, B+=3.5, B=3.0, B-=2.75, C+=2.5, C=2.0, C-=1.75, D=1.0, F=0.0`;
+
+            const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [
+                            { text: prompt },
+                            {
+                                inline_data: {
+                                    mime_type: mimeType,
+                                    data: base64Data
+                                }
+                            }
+                        ]
+                    }],
+                    generationConfig: {
+                        temperature: 0.1,
+                        maxOutputTokens: 4096
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error?.message || 'API request failed');
+            }
+
+            const result = await response.json();
+            const text = result.candidates[0].content.parts[0].text;
+            
+            // Extract JSON from response
+            const jsonMatch = text.match(/\{[\s\S]*\}/);
+            if (!jsonMatch) {
+                throw new Error('No JSON found in response');
+            }
+            
+            return JSON.parse(jsonMatch[0]);
+        }
+
+        function showExtractedPreview(data) {
+            const preview = document.getElementById('extractedPreview');
+            const summary = document.getElementById('extractedSummary');
+            const coursesList = document.getElementById('extractedCourses');
+            
+            const totalCourses = data.semesters.reduce((sum, s) => sum + s.courses.length, 0);
+            summary.textContent = `${data.semesters.length} semester(s) found • ${totalCourses} course(s) total`;
+            
+            coursesList.innerHTML = data.semesters.map(sem => `
+                <div style="margin-bottom:12px;">
+                    <div style="font-family:var(--font-mono);font-size:11px;color:var(--accent);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">${sem.name}</div>
+                    ${sem.courses.map(c => `
+                        <div class="course-item-preview">
+                            <span>${c.name}</span>
+                            <span style="font-family:var(--font-mono);color:var(--fg-muted);">${c.grade || c.mark || '—'} • ${c.credits}cr</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+            
+            preview.classList.add('active');
+        }
+
+        function cancelExtractedData() {
+            extractedData = null;
+            document.getElementById('extractedPreview').classList.remove('active');
+        }
+
+        function applyExtractedData() {
+            if (!extractedData || !extractedData.semesters) {
+                alert('No extracted data to apply');
+                return;
+            }
+
+            // Map extracted semesters to our semester IDs
+            const semesterMapping = {};
+            extractedData.semesters.forEach((extSem, index) => {
+                if (index < SEMESTERS.length) {
+                    semesterMapping[extSem.name] = SEMESTERS[index].id;
+                }
+            });
+
+            // Clear existing courses for semesters that will be populated
+            extractedData.semesters.forEach((extSem, index) => {
+                if (index < SEMESTERS.length) {
+                    const semId = SEMESTERS[index].id;
+                    state.courses[semId] = extSem.courses.map(c => {
+                        const mark = c.mark || parseMarkInput(c.grade || '');
+                        const [letter, gp] = mark != null ? convertMarkToGrade(mark) : [c.grade || null, null];
+                        return {
+                            id: genId(),
+                            semesterId: semId,
+                            name: c.name,
+                            creditHours: c.credits || 3,
+                            mark: mark,
+                            letterGrade: letter,
+                            gradePoint: gp,
+                            isIncluded: true,
+                            isMajor: false,
+                            isRetaken: false
+                        };
+                    });
+                    state.semesters[semId].included = true;
+                }
+            });
+
+            saveState();
+            renderAll();
+            cancelExtractedData();
+            
+            // Switch to first semester that has data
+            const firstPopulated = extractedData.semesters[0];
+            if (firstPopulated && SEMESTERS.length > 0) {
+                state.selectedSemester = SEMESTERS[0].id;
+                document.getElementById('semesterSelect').value = SEMESTERS[0].id;
+            }
+            
+            alert('Transcript data applied successfully!');
+        }
+
+        // ===== RENDERING =====
         function renderAll() {
             renderHero();
             renderGpaTab();
